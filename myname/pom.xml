@@ -60,6 +60,12 @@
     <artifactId>mysql-connector-java</artifactId>
     <version>5.1.6</version>
 </dependency>
+    <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-commons-core -->
+<dependency>
+    <groupId>org.springframework.data</groupId>
+    <artifactId> spring-data-commons-core</artifactId>
+    <version>1.4.1. RELEASE</version>
+</dependency>
 <!-- <dependency> -->
 <!--     <groupId>org.springframework</groupId> -->
 <!--     <artifactId>spring-aop</artifactId> -->
