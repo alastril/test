@@ -1,0 +1,11 @@
+
+*.epoch
+myname/.classpath
+myname/.classpath
+myname/.settings/org.eclipse.jdt.core.prefs
+*.prefs
+myname/.classpath
+*.log
+*.lck
+*.prefs
+myname/.classpath

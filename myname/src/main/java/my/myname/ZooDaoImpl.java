@@ -2,29 +2,69 @@ package my.myname;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository("ZooDao")
-@Transactional
+@Transactional("transactionManagerSession")
 public class ZooDaoImpl implements ZooDao {
 
 	@Autowired
 	SessionFactory sessionFactory;
+	@Autowired
+	@Qualifier("emfA")
+	SessionFactory sessionFactoryTest;
+	@Autowired
+	@Qualifier("emfB")
+	SessionFactory sessionFactoryTestB;
+//	@Autowired
+//	@Qualifier("emfA")
+//	EntityManager emA;
 	
-	@Transactional(value=TxType.REQUIRES_NEW)
+	@Autowired
+	@Qualifier("entityManagerFactory")
+	EntityManager em;
+	
+	
+	@Transactional(transactionManager="transactionManagerJPA", propagation=  Propagation.REQUIRED)
 	public Zoo save(Zoo zoo) {
-		getSessionFactory().getCurrentSession().saveOrUpdate(zoo);
+
+		if(zoo.getId()!=null && em.getReference(Zoo.class, zoo.getId())!=null){
+		 em.merge(zoo);
+		} else{
+			em.persist(zoo);
+		}
+		//getSessionFactory().getCurrentSession().saveOrUpdate(zoo);
 		return zoo;
 	}
-	@Transactional(value=TxType.REQUIRES_NEW)
+
+	@Transactional(transactionManager="transactionМanagerAtomicos", propagation=  Propagation.REQUIRES_NEW)
 	public Animals save(Animals animals) {
-		getSessionFactory().getCurrentSession().saveOrUpdate(animals);
+//		System.out.println(emA.getReference(Food.class, 1l));
+		
+		try {
+			sessionFactoryTest.getCurrentSession().saveOrUpdate(animals.clone());
+			sessionFactoryTestB.getCurrentSession().saveOrUpdate((Animals)animals.clone());
+			
+		} catch (HibernateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//		emA.merge(animals);
+		//getSessionFactory().getCurrentSession().saveOrUpdate(animals);
 		return animals;
 	}
 
@@ -46,13 +86,19 @@ public class ZooDaoImpl implements ZooDao {
 		return (Zoo) getSessionFactory().getCurrentSession().getNamedQuery("selectById").setParameter("id", id).uniqueResult();
 	}
 
-	@Bean("sessionFactory")
+
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+	}
+	public EntityManager getEm() {
+		return em;
+	}
+	public void setEm(EntityManager em) {
+		this.em = em;
 	}
 
 }
