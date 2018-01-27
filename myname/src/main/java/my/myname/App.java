@@ -42,8 +42,7 @@ public class App
        
        zoo.getAnimalsList().add(animalSobaka);
        zoo.getAnimalsList().add(animalKot);
-       Animals an = new Animals();
-       an.setName("kot");
+       
        zd.save(zoo);
        
        //zd.save(animalKot);
@@ -66,7 +65,12 @@ public class App
        fs.save((Food)food.clone());
        fs.save((Food)food2.clone());
        //List<Animals> al = zd.getListAnimals();
-       zd.save(an);
+       Animals an = new Animals();
+       an.setName("kot3");
+       Animals an2 = new Animals();
+       an2.setName("kot2");
+       zd.saveJTA(an, an2);
+       zd.saveJTA((Animals)an.clone(), (Animals)an2.clone());
        List<Food> foodList = fs.findAll();
        for(Food fd: foodList){
     	   System.out.println(fd.toString());
