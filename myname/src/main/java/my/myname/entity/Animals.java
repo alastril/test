@@ -1,4 +1,4 @@
-package my.myname;
+package my.myname.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,8 +18,13 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 @Entity
 @Table(name="ANIMALS")
+@Component
+@Scope(scopeName="prototype")
 public class Animals implements Serializable{
 	private static final long serialVersionUID = 2L;
 	private Long id;
@@ -56,9 +61,11 @@ public class Animals implements Serializable{
 	}
 	
 	@Override
-	protected Object clone() throws CloneNotSupportedException {
+	public Object clone() throws CloneNotSupportedException {
 		Animals an = new Animals();
 		an.setName(this.getName());
+		an.setZooList(this.getZooList());
+		an.setFoodList(this.getFoodList());
 		return an;
 	}
 	
@@ -67,8 +74,7 @@ public class Animals implements Serializable{
 		return "id:"+getId() + ", name:" + getName();
 	}
 	
-	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
-	@JoinColumn(name = "ID_ANIMALS")
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="animals",  orphanRemoval=true)
 	public List<Food> getFoodList() {
 		return foodList;
 	}

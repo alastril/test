@@ -1,4 +1,4 @@
-package my.myname;
+package my.myname.entity;
 
 
 import java.io.Serializable;
@@ -23,9 +23,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Generated;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service("my_names")
+@Component
+@Scope(scopeName="prototype")
 @Entity
 @Table(name="ZOO")
 @NamedQueries({
@@ -77,10 +80,11 @@ public class Zoo implements Serializable{
 	}
 
 	@Override
-	protected Object clone() throws CloneNotSupportedException {
+	public Object clone() throws CloneNotSupportedException {
 		Zoo zoo = new Zoo();
 		zoo.setDateCreation(this.getDateCreation());
 		zoo.setName(this.getName());
+		zoo.setAnimalsList(this.getAnimalsList());
 		return zoo;
 	}
 	

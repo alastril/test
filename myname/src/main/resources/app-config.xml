@@ -58,14 +58,15 @@
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
 		p:dataSource-ref="dataSource" p:packagesToScan="my.myname"
-		p:hibernateProperties-ref="hibernateProperties" />
+		p:hibernateProperties-ref="hibernateProperties"
+		 />
 
 	<util:properties id="hibernateProperties">
 		<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
 		<prop key="hibernate.max_fetch_depth">3</prop>
 		<prop key="hibernate. jdЬc.fetch_size">50</prop>
 		<prop key="hibernate.jdЬc.batch_size">lO</prop>
-		<prop key="hibernate.show_sql">true</prop>
+		<prop key="hibernate.show_sql">false</prop>
 		<prop key="hibernate.format_sql">true</prop>
 		<prop key="hibernate.hbm2ddl.auto">create-drop</prop>
 		<prop key="hibernate.id.new_generator_mappings">false</prop>

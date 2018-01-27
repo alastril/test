@@ -58,6 +58,10 @@
 	<bean id="emfBase"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
 		abstract="true">
+<!-- 		<property name="persistenceXmlLocation"> -->
+<!--             <value>classpath*:persistence.xml</value> -->
+<!--     	</property> -->
+		
 <!-- 		<property name="packagesToScan" value="my.myname" /> -->
 <!--     <property name="jtaTransactionManager" ref="transactionМanagerAtomicos"></property> -->
 <!--     <property name="hibernateProperties"> -->

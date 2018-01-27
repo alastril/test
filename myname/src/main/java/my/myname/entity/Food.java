@@ -1,4 +1,4 @@
-package my.myname;
+package my.myname.entity;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -18,8 +18,13 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 @Entity
 @Table(name="FOOD")
+@Component
+@Scope(scopeName="prototype")
 public class Food implements Serializable{
 	private static final long serialVersionUID = 3L;
 	private Long id;
@@ -43,7 +48,7 @@ public class Food implements Serializable{
 		this.name = name;
 	}
 
-	@ManyToOne(fetch= FetchType.LAZY)
+	@ManyToOne(cascade=CascadeType.ALL, fetch= FetchType.LAZY, optional=true)
 	@JoinColumn(name="ID_ANIMALS")
 	public Animals getAnimals() {
 		return animals;
@@ -52,9 +57,10 @@ public class Food implements Serializable{
 		this.animals = animals;
 	}
 	@Override
-	protected Object clone() throws CloneNotSupportedException {
+	public Object clone() throws CloneNotSupportedException {
 		Food an = new Food();
 		an.setName(this.getName());
+		an.setAnimals((Animals)this.getAnimals().clone());
 		return an;
 	}
 	

@@ -1,20 +1,21 @@
-package my.myname;
+package my.myname.crud_spr_data;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 
-import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import my.myname.entity.Animals;
+import my.myname.entity.Food;
+import my.myname.entity.Zoo;
 
 @Repository("ZooDao")
 @Transactional("transactionManagerSession")
@@ -30,41 +31,35 @@ public class ZooDaoImpl implements ZooDao {
 //	SessionFactory sessionFactoryTestB;
 	@PersistenceContext(unitName="emfA")
 	EntityManager emA;
-	@Autowired
 	@PersistenceContext(unitName="emfB")
 	EntityManager emB;
 	
+	@Autowired
+	@Qualifier("entityManagerFactory")
+	EntityManager em;
 	
+	@Override
 	public Zoo save(Zoo zoo) {
-
 		getSessionFactory().getCurrentSession().saveOrUpdate(zoo);
 		return zoo;
 	}
-
-	@Transactional(transactionManager="transactionМanagerAtomicos", propagation=  Propagation.REQUIRED)
+	@Override
 	public Animals save(Animals animals) {
 		
-		emA.joinTransaction();
-		emB.joinTransaction();
-		try {
-//			sessionFactoryTest.getCurrentSession().saveOrUpdate(animals.clone());
-//			sessionFactoryTestB.getCurrentSession().saveOrUpdate((Animals)animals.clone());
-			emA.persist(animals);
-			emB.persist((Animals)animals.clone());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-//		emA.merge(animals);
-		//getSessionFactory().getCurrentSession().saveOrUpdate(animals);
+		getSessionFactory().getCurrentSession().saveOrUpdate(animals);
 		return animals;
 	}
+
+	@Override
+	public Food save(Food food) {
+			getSessionFactory().getCurrentSession().saveOrUpdate(food);
+		return food;
+	}
 	
-	
-	@Transactional(transactionManager = "transactionМanagerAtomicos", propagation = Propagation.REQUIRED)
+	@Transactional(transactionManager = "transactionМanagerAtomicos")
 	public List<Animals> saveJTA(Animals animals, Animals duplicate) {
 		List<Animals> anls = new ArrayList<>();
-		if (!emA.isJoinedToTransaction() || !emB.isJoinedToTransaction()) {
+		if (!emA.isJoinedToTransaction() && !emB.isJoinedToTransaction()) {
 			emA.joinTransaction();
 			emB.joinTransaction();
 		}

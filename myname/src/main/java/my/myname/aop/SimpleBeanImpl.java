@@ -21,8 +21,7 @@ public class SimpleBeanImpl implements SimpleBean {
 	}
 
 	public void say(String msg) {
-		String res = "Fuck ";
+		String res = "Fuck-Fuck-Fuck!!!";
 		System.out.println(res);
-		
 	}
 }
