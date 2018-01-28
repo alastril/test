@@ -12,7 +12,9 @@ public class ForJunitTest {
 	@Test
 	public void testRandomCount() {
 		ForJunit ju = new ForJunit();
-		assertTrue(ju.getRandomByCount(10,200).size()>0); 
+		assertTrue(ju.getRandomByCount(10,200).size()>0);      
+		
+		///terter
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
