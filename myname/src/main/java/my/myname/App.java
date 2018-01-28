@@ -3,17 +3,15 @@ package my.myname;
 import java.util.Date;
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.springframework.aop.config.AopNamespaceUtils;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
-import org.springframework.core.convert.ConversionService;
 
 import my.myname.aop.AspectTest;
 import my.myname.aop.PointCut;
 import my.myname.aop.SimpleBean;
-import my.myname.converters.AnotherTypeForConvert;
+import my.myname.aop.SimpleBeanImpl;
 import my.myname.crud_spr_data.AnimalsService;
 import my.myname.crud_spr_data.FoodService;
 import my.myname.crud_spr_data.ZooDao;
@@ -28,18 +26,17 @@ import my.myname.entity.Zoo;
 public class App {
 	public static void main(String[] args) throws Throwable {
 		ApplicationContext ap = new GenericXmlApplicationContext("classpath:app-config.xml");
-		
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
 		FoodService fs = (FoodService) ap.getBean("FoodService");
 
 		// callZooSave(ap);
-		FoodSaveCall(ap);
-		converterCall(ap);
-		AopCall(ap);
+		callFoodSave(ap);
+
+		callAop(ap);
 	}
 
-	public static void AopCall(ApplicationContext ap) {
-		SimpleBeanImpl sb = (SimpleBeanImpl)ap.getBean("simpleBeanImpl");
+	public static void callAop(ApplicationContext ap) {
+		SimpleBeanImpl sb = ap.getBean(SimpleBeanImpl.class);
 		sb.sayHello("Grisha");
 		// ProxyFactory pf = new ProxyFactory();
 		// pf.setTarget(sb);
@@ -49,7 +46,7 @@ public class App {
 		// System.out.println(aopBean.sayFuck("Grisha!1!11"));
 	}
 
-	public static void ZooSaveCall(ApplicationContext ap) throws Throwable {
+	public static void callZooSave(ApplicationContext ap) throws Throwable {
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
 		Zoo zoo = new Zoo();
 		zoo.setName("menskiy");
@@ -95,7 +92,7 @@ public class App {
 	 * @param zd
 	 * @throws Throwable
 	 */
-	public static void FoodSaveCall(ApplicationContext ap) throws Throwable {
+	public static void callFoodSave(ApplicationContext ap) throws Throwable {
 
 		// ZooDao zd = (ZooDao) ap.getBean("ZooDao");
 		FoodService fs = (FoodService) ap.getBean("FoodService");
@@ -136,7 +133,7 @@ public class App {
 
 	}
 
-	public static void JTACall(ApplicationContext ap) throws Throwable {
+	public static void callJTA(ApplicationContext ap) throws Throwable {
 
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
 		Animals an = new Animals();
@@ -154,16 +151,4 @@ public class App {
 		}
 	}
 
-	
-	public static void converterCall(ApplicationContext ap) {
-		SimpleBeanImpl smpl = (SimpleBeanImpl)ap.getBean("dateConvert");
-		System.out.println(smpl);
-		ConversionService conversionService = ap.getBean(ConversionService.class);
-		AnotherTypeForConvert anotherContact = ap.getBean(AnotherTypeForConvert.class);
-		anotherContact.setId(25);
-		anotherContact.setName("Vasya Pypkin");
-		anotherContact.setDateTime(new DateTime());
-		smpl= conversionService.convert(anotherContact, SimpleBeanImpl.class); 
-		System.out.println(smpl);
-	}
 }
