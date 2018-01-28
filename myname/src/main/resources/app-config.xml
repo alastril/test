@@ -20,7 +20,7 @@
          http://www.springframework.org/schema/context
          http://www.springframework.org/schema/context/spring-context-3.0.xsd">
          
-<import resource="app-configJTA.xml"/>
+<import resource="app-config_JTA.xml"/>
 	<context:annotation-config />
 	<tx:annotation-driven />
 	<aop:aspectj-autoproxy proxy-target-class="true" />
@@ -73,4 +73,19 @@
 	</util:properties>
 
 
+
+<!-- Converters ("conversionService" name - don't change, AppContx override default converter factory bean) -->
+<bean id="conversionService"  class="org.springframework.context.support.ConversionServiceFactoryBean">
+	<property name="converters">
+		<list>
+			<bean class="my.myname.converters.StringToDateConverter"></bean>
+			<bean class="my.myname.converters.SimpleBeanTOAnotherTypeConverter"></bean>
+		</list>
+	</property>
+</bean>
+
+
+<!-- TEST BEAN -->
+<bean id="dateConvert" class="my.myname.SimpleBeanImpl"
+	p:dt= "14-05-2034"/> 
 </beans> 
