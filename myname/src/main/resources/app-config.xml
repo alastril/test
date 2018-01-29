@@ -29,6 +29,19 @@
 	<jpa:repositories base-package="my.myname"
 		entity-manager-factory-ref="entityManagerFactory"
 		transaction-manager-ref="transactionManagerJPA" />
+<bean id="conversionService" class = "org.springframework.format.support.FormattingConversionServiceFactoryBean">
+	<property name="converters">
+		<list>
+			<bean class="my.myname.converters.StringToDateConverter"></bean>
+			<bean class="my.myname.converters.SimpleBeanTOAnotherTypeConverter"></bean>
+		</list>
+	</property>
+<property name="formatters">
+<list>
+	<bean class="my.myname.formaters.Formater"></bean>
+	<bean class="my.myname.formaters.TestAnotationFormatter"></bean>
+</list>
+</property></bean>
 
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
@@ -75,17 +88,12 @@
 
 
 <!-- Converters ("conversionService" name - don't change, AppContx override default converter factory bean) -->
-<bean id="conversionService"  class="org.springframework.context.support.ConversionServiceFactoryBean">
-	<property name="converters">
-		<list>
-			<bean class="my.myname.converters.StringToDateConverter"></bean>
-			<bean class="my.myname.converters.SimpleBeanTOAnotherTypeConverter"></bean>
-		</list>
-	</property>
-</bean>
+<!-- <bean id="conversionService"  class="org.springframework.context.support.ConversionServiceFactoryBean"> -->
+
+<!-- </bean> -->
 
 
 <!-- TEST BEAN -->
 <bean id="dateConvert" class="my.myname.SimpleBeanImpl"
-	p:dt= "14-05-2034"/> 
+	p:dt= "14-05-2036" p:name="HELLO, bitch!!!" /> 
 </beans> 
