@@ -6,10 +6,16 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.springframework.aop.config.AopNamespaceUtils;
 import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.format.AnnotationFormatterFactory;
+import org.springframework.format.support.DefaultFormattingConversionService;
+import org.springframework.format.support.FormattingConversionServiceFactoryBean;
+import org.springframework.validation.DataBinder;
 
+import my.myname.anotations.AnotationFormater;
 import my.myname.aop.AspectTest;
 import my.myname.aop.PointCut;
 import my.myname.aop.SimpleBean;
@@ -20,6 +26,8 @@ import my.myname.crud_spr_data.ZooDao;
 import my.myname.entity.Animals;
 import my.myname.entity.Food;
 import my.myname.entity.Zoo;
+import my.myname.formaters.TestAnotationFormatter;
+import my.myname.formaters.FormaterForAnotation;
 
 /**
  * Hello world!
@@ -28,18 +36,19 @@ import my.myname.entity.Zoo;
 public class App {
 	public static void main(String[] args) throws Throwable {
 		ApplicationContext ap = new GenericXmlApplicationContext("classpath:app-config.xml");
-		
+
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
 		FoodService fs = (FoodService) ap.getBean("FoodService");
 
 		// callZooSave(ap);
-		FoodSaveCall(ap);
-		converterCall(ap);
-		AopCall(ap);
+		// FoodSaveCall(ap);
+		formatersCall(ap);
+		// converterCall(ap);
+		// AopCall(ap);
 	}
 
 	public static void AopCall(ApplicationContext ap) {
-		SimpleBeanImpl sb = (SimpleBeanImpl)ap.getBean("simpleBeanImpl");
+		SimpleBeanImpl sb = (SimpleBeanImpl) ap.getBean("simpleBeanImpl");
 		sb.sayHello("Grisha");
 		// ProxyFactory pf = new ProxyFactory();
 		// pf.setTarget(sb);
@@ -115,13 +124,13 @@ public class App {
 		// zd.save(animalKot);
 		// zd.save(animalKot2);
 		Animals test = food.getAnimals();
-		
+
 		if (test != null) {
 			as.save(food.getAnimals());
 		} else {
 			fs.save(food);
 		}
-		
+
 		test = food2.getAnimals();
 		if (test != null) {
 			as.save(food2.getAnimals());
@@ -154,16 +163,40 @@ public class App {
 		}
 	}
 
-	
 	public static void converterCall(ApplicationContext ap) {
-		SimpleBeanImpl smpl = (SimpleBeanImpl)ap.getBean("dateConvert");
+		SimpleBeanImpl smpl = (SimpleBeanImpl) ap.getBean("dateConvert");
 		System.out.println(smpl);
 		ConversionService conversionService = ap.getBean(ConversionService.class);
 		AnotherTypeForConvert anotherContact = ap.getBean(AnotherTypeForConvert.class);
 		anotherContact.setId(25);
 		anotherContact.setName("Vasya Pypkin");
 		anotherContact.setDateTime(new DateTime());
-		smpl= conversionService.convert(anotherContact, SimpleBeanImpl.class); 
+		smpl = conversionService.convert(anotherContact, SimpleBeanImpl.class);
+		System.out.println(smpl);
+	}
+
+	public static void formatersCall(ApplicationContext ap) {
+		SimpleBeanImpl smpl = (SimpleBeanImpl) ap.getBean("simpleBeanImpl");
+
+		System.out.println(smpl);
+
+		// Formater
+		ConversionService conversionService = ap.getBean(ConversionService.class);
+		System.out.println(conversionService.convert(smpl, String.class));// print
+		smpl = conversionService.convert("14-05-2036", SimpleBeanImpl.class); // parse
+
+		conversionService.convert("14-05-2036", DateTime.class);
+		
+		//TestAnotationFormatter
+		DataBinder dataBinder = new DataBinder(smpl);
+		dataBinder.setConversionService(conversionService);
+		MutablePropertyValues mpv = new MutablePropertyValues();
+		mpv.add("name", "FACK!!!!");
+		dataBinder.bind(mpv);
+		dataBinder.getBindingResult()
+        .getModel()
+        .entrySet()
+        .forEach(System.out::println);
 		System.out.println(smpl);
 	}
 }

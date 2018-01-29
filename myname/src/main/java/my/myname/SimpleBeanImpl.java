@@ -2,16 +2,24 @@ package my.myname;
 
 
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.stereotype.Component;
 
+import my.myname.anotations.AnotationFormater;
 import my.myname.aop.SimpleBean;
 
 @Component("simpleBeanImpl")
+@Scope("prototype")
 public class SimpleBeanImpl implements SimpleBean {
 
 	private long id;
+	
+	@AnotationFormater(oldChar='!', newChar='.')
 	private String name;
+	@DateTimeFormat(pattern="dd-yyyy-MM")
 	private DateTime dt;
 	
 	@Override
@@ -28,7 +36,7 @@ public class SimpleBeanImpl implements SimpleBean {
 	}
 
 	public void say(String msg) {
-		String res = "Fuck-Fuck-Fuck!!!";
+		String res = "Fuck-Fuck-Fuck!!!" + msg;
 		System.out.println(res);
 	}
 
@@ -45,10 +53,12 @@ public class SimpleBeanImpl implements SimpleBean {
 	public void setId(long id) {
 		this.id = id;
 	}
+	
 	public String getName() {
 		return name;
 	}
-	public void setName(String name) {
+	
+	public void setName(@AnotationFormater(oldChar='!',newChar='.')String name) {
 		this.name = name;
 	}
 	@Override
