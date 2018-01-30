@@ -215,10 +215,7 @@ public class App {
 		BeanPropertyBindingResult result = new BeanPropertyBindingResult(classforValidationTests, "nameValidation");
 		ValidationUtils.invokeValidator(validatorImpl, classforValidationTests, result);
 
-//		result.getAllErrors().stream().forEach(action -> {
-//			System.out.println("Spring Validator check:");
-//			System.out.println(action.getCode());
-//		});
+
 		
 		// JSR realization and //constraint realization
 		classforValidationTests.setName("Myname!!");
