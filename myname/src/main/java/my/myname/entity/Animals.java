@@ -64,8 +64,8 @@ public class Animals implements Serializable{
 	public Object clone() throws CloneNotSupportedException {
 		Animals an = new Animals();
 		an.setName(this.getName());
-		an.setZooList(this.getZooList());
-		an.setFoodList(this.getFoodList());
+//		an.setZooList(this.getZooList());
+//		an.setFoodList(this.getFoodList());
 		return an;
 	}
 	
