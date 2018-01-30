@@ -1,4 +1,4 @@
-package my.myname.formaters;
+package my.myname.validation.formaters;
 
 import java.text.ParseException;
 import java.util.Locale;

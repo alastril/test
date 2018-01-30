@@ -1,4 +1,4 @@
-package my.myname.formaters;
+package my.myname.validation.formaters;
 
 import java.text.ParseException;
 import java.util.Locale;
@@ -68,7 +68,6 @@ public class FormaterForAnotation implements Formatter<String>// return type for
 	 */
 	@Override
 	public String print(String object, Locale locale) {
-		//TODO AOP LOG
 		return object;
 	}
 
@@ -77,8 +76,6 @@ public class FormaterForAnotation implements Formatter<String>// return type for
 	 */
 	@Override
 	public String parse(String text, Locale locale) throws ParseException {
-		//TODO AOP LOG
-		System.out.println("Parse with Anotation:" + text);
 		return text.replace(oldChar, newChar);
 	}
 

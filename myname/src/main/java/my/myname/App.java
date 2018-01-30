@@ -1,7 +1,10 @@
 package my.myname;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.validation.Validator;
 
 import org.joda.time.DateTime;
 import org.springframework.aop.config.AopNamespaceUtils;
@@ -13,21 +16,27 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.format.AnnotationFormatterFactory;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.DataBinder;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.ValidationUtils;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import my.myname.anotations.AnotationFormater;
 import my.myname.aop.AspectTest;
 import my.myname.aop.PointCut;
 import my.myname.aop.SimpleBean;
-import my.myname.converters.AnotherTypeForConvert;
 import my.myname.crud_spr_data.AnimalsService;
 import my.myname.crud_spr_data.FoodService;
 import my.myname.crud_spr_data.ZooDao;
 import my.myname.entity.Animals;
 import my.myname.entity.Food;
 import my.myname.entity.Zoo;
-import my.myname.formaters.TestAnotationFormatter;
-import my.myname.formaters.FormaterForAnotation;
+import my.myname.validation.converters.AnotherTypeForConvert;
+import my.myname.validation.formaters.FormaterForAnotation;
+import my.myname.validation.formaters.TestAnotationFormatter;
+import my.myname.validation.validators.ClassforValidationTests;
+import my.myname.validation.validators.ValidatorImpl;
 
 /**
  * Hello world!
@@ -42,20 +51,21 @@ public class App {
 
 		// callZooSave(ap);
 		// FoodSaveCall(ap);
-		formatersCall(ap);
+		// formatersCall(ap);
 		// converterCall(ap);
 		// AopCall(ap);
+		validatorsCall(ap);
 	}
 
 	public static void AopCall(ApplicationContext ap) {
 		SimpleBeanImpl sb = (SimpleBeanImpl) ap.getBean("simpleBeanImpl");
 		sb.sayHello("Grisha");
-		// ProxyFactory pf = new ProxyFactory();
-		// pf.setTarget(sb);
-		// pf.addAdvice(new PointCut());
-		// SimpleBeanImpl aopBean = (SimpleBeanImpl)pf.getProxy();
-		// System.out.println(aopBean.sayHello("Grisha!1!11"));
-		// System.out.println(aopBean.sayFuck("Grisha!1!11"));
+		ProxyFactory pf = new ProxyFactory();
+		pf.setTarget(sb);
+		pf.addAdvice(new PointCut());
+		SimpleBeanImpl aopBean = (SimpleBeanImpl) pf.getProxy();
+		System.out.println(aopBean.sayHello("Grisha!1!11"));
+		System.out.println(aopBean.sayFuck("Grisha!1!11"));
 	}
 
 	public static void ZooSaveCall(ApplicationContext ap) throws Throwable {
@@ -186,17 +196,44 @@ public class App {
 		smpl = conversionService.convert("14-05-2036", SimpleBeanImpl.class); // parse
 
 		conversionService.convert("14-05-2036", DateTime.class);
-		
-		//TestAnotationFormatter
+
+		// TestAnotationFormatter
 		DataBinder dataBinder = new DataBinder(smpl);
 		dataBinder.setConversionService(conversionService);
 		MutablePropertyValues mpv = new MutablePropertyValues();
 		mpv.add("name", "FACK!!!!");
 		dataBinder.bind(mpv);
-		dataBinder.getBindingResult()
-        .getModel()
-        .entrySet()
-        .forEach(System.out::println);
+		dataBinder.getBindingResult().getModel().entrySet().forEach(System.out::println);
 		System.out.println(smpl);
+	}
+
+	public static void validatorsCall(ApplicationContext ap) {
+		ValidatorImpl validatorImpl = ap.getBean(ValidatorImpl.class);
+		ClassforValidationTests classforValidationTests = ap.getBean(ClassforValidationTests.class);
+		
+		// Spring realization
+		BeanPropertyBindingResult result = new BeanPropertyBindingResult(classforValidationTests, "nameValidation");
+		ValidationUtils.invokeValidator(validatorImpl, classforValidationTests, result);
+
+//		result.getAllErrors().stream().forEach(action -> {
+//			System.out.println("Spring Validator check:");
+//			System.out.println(action.getCode());
+//		});
+		
+		// JSR realization and //constraint realization
+		classforValidationTests.setName("Myname!!");
+		Validator validatorJsr =  ap.getBean(LocalValidatorFactoryBean.class);
+		validatorJsr.validate(classforValidationTests);
+
+		
+		classforValidationTests.setName("A");//size annotation
+		classforValidationTests.setDt(new DateTime());
+		validatorJsr.validate(classforValidationTests);
+//		.stream().forEach(action -> {
+//			System.out.println(action.getPropertyPath());
+//			System.out.println(action.getInvalidValue());
+//			System.out.println(action.getMessage());
+//		});
+		
 	}
 }

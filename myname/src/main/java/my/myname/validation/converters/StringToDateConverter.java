@@ -1,4 +1,4 @@
-package my.myname.converters;
+package my.myname.validation.converters;
 
 import javax.annotation.PostConstruct;
 
@@ -34,7 +34,6 @@ public class StringToDateConverter implements Converter<String, DateTime>{
 	 */
 	@Override
 	public DateTime convert(String strinigDate) {
-		System.out.println("converting...."+strinigDate);
 		return dateFomater.parseDateTime(strinigDate);
 	}
 

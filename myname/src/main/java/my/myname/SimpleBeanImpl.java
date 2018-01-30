@@ -16,10 +16,8 @@ import my.myname.aop.SimpleBean;
 public class SimpleBeanImpl implements SimpleBean {
 
 	private long id;
-	
 	@AnotationFormater(oldChar='!', newChar='.')
 	private String name;
-	@DateTimeFormat(pattern="dd-yyyy-MM")
 	private DateTime dt;
 	
 	@Override
@@ -58,7 +56,7 @@ public class SimpleBeanImpl implements SimpleBean {
 		return name;
 	}
 	
-	public void setName(@AnotationFormater(oldChar='!',newChar='.')String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 	@Override

@@ -1,4 +1,4 @@
-package my.myname.converters;
+package my.myname.validation.converters;
 
 import org.joda.time.DateTime;
 import org.springframework.context.annotation.Scope;
