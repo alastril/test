@@ -52,6 +52,7 @@ public class App {
 		// callZooSave(ap);
 		// FoodSaveCall(ap);
 		// formatersCall(ap);
+		JTACall(ap);
 		// converterCall(ap);
 		// AopCall(ap);
 		validatorsCall(ap);
@@ -163,7 +164,7 @@ public class App {
 		Animals an2 = new Animals();
 		an2.setName("kotyara");
 		zd.saveJTA(an, an2);
-		zd.saveJTA((Animals) an.clone(), (Animals) an2.clone());
+		zd.saveJTA((Animals) an2.clone(), (Animals) an.clone());
 		List<Animals> al = zd.getListAnimals();
 		for (Animals a : al) {
 			System.out.println(a.toString());
