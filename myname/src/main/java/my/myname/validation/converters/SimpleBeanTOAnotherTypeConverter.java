@@ -1,4 +1,4 @@
-package my.myname.converters;
+package my.myname.validation.converters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

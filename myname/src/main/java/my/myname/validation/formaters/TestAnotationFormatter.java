@@ -1,4 +1,4 @@
-package my.myname.formaters;
+package my.myname.validation.formaters;
 
 import java.util.HashSet;
 import java.util.Set;

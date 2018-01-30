@@ -29,19 +29,7 @@
 	<jpa:repositories base-package="my.myname"
 		entity-manager-factory-ref="entityManagerFactory"
 		transaction-manager-ref="transactionManagerJPA" />
-<bean id="conversionService" class = "org.springframework.format.support.FormattingConversionServiceFactoryBean">
-	<property name="converters">
-		<list>
-			<bean class="my.myname.converters.StringToDateConverter"></bean>
-			<bean class="my.myname.converters.SimpleBeanTOAnotherTypeConverter"></bean>
-		</list>
-	</property>
-<property name="formatters">
-<list>
-	<bean class="my.myname.formaters.Formater"></bean>
-	<bean class="my.myname.formaters.TestAnotationFormatter"></bean>
-</list>
-</property></bean>
+
 
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
@@ -88,9 +76,24 @@
 
 
 <!-- Converters ("conversionService" name - don't change, AppContx override default converter factory bean) -->
-<!-- <bean id="conversionService"  class="org.springframework.context.support.ConversionServiceFactoryBean"> -->
+<!-- <bean id="conversionService"  class="org.springframework.context.support.ConversionServiceFactoryBean"> TEST-->
+		
+<bean id="conversionService" class = "org.springframework.format.support.FormattingConversionServiceFactoryBean">
+	<property name="converters">
+		<list>
+			<bean class="my.myname.validation.converters.StringToDateConverter"></bean>
+			<bean class="my.myname.validation.converters.SimpleBeanTOAnotherTypeConverter"></bean>
+		</list>
+	</property>
+<property name="formatters">
+<list>
+	<bean class="my.myname.validation.formaters.Formater"></bean>
+	<bean class="my.myname.validation.formaters.TestAnotationFormatter"></bean>
+</list>
+</property></bean>
 
-<!-- </bean> -->
+<!-- not jsr_349 -->
+<bean id="validatorJSR_303" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"></bean>
 
 
 <!-- TEST BEAN -->
