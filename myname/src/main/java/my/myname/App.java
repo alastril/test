@@ -49,10 +49,10 @@ public class App {
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
 		FoodService fs = (FoodService) ap.getBean("FoodService");
 
-		// callZooSave(ap);
+		// ZooSaveCall(ap);
 		// FoodSaveCall(ap);
 		// formatersCall(ap);
-		JTACall(ap);
+		// JTACall(ap);
 		// converterCall(ap);
 		// AopCall(ap);
 		validatorsCall(ap);
