@@ -9,11 +9,10 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
-import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorContextImpl;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BeanPropertyBindingResult;
 
-import my.myname.validation.validators.ValidationTestMarker;
+import my.myname.validation.validators.class_test.ValidationTestMarker;
 
 
 @Aspect

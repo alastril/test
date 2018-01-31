@@ -5,6 +5,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import my.myname.validation.validators.class_test.ClassforValidationTests;
+
 @Component
 public class ValidatorImpl implements Validator{
 

@@ -21,6 +21,7 @@
          http://www.springframework.org/schema/context/spring-context-3.0.xsd">
          
 <import resource="app-config_JTA.xml"/>
+<import resource="app-config_Sheduler.xml"/>
 	<context:annotation-config />
 	<tx:annotation-driven />
 	<aop:aspectj-autoproxy proxy-target-class="true" />

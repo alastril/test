@@ -3,6 +3,8 @@ package my.myname;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import javax.validation.Validator;
 
@@ -13,6 +15,7 @@ import org.springframework.beans.MutablePropertyValues;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.format.AnnotationFormatterFactory;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
@@ -32,11 +35,14 @@ import my.myname.crud_spr_data.ZooDao;
 import my.myname.entity.Animals;
 import my.myname.entity.Food;
 import my.myname.entity.Zoo;
+import my.myname.shedulers.ClassForShedulerTest;
+import my.myname.shedulers.ShedulerAndAsync;
+import my.myname.shedulers.TaskToExecute;
 import my.myname.validation.converters.AnotherTypeForConvert;
 import my.myname.validation.formaters.FormaterForAnotation;
 import my.myname.validation.formaters.TestAnotationFormatter;
-import my.myname.validation.validators.ClassforValidationTests;
 import my.myname.validation.validators.ValidatorImpl;
+import my.myname.validation.validators.class_test.ClassforValidationTests;
 
 /**
  * Hello world!
@@ -55,7 +61,12 @@ public class App {
 		// JTACall(ap);
 		// converterCall(ap);
 		// AopCall(ap);
-		validatorsCall(ap);
+		//validatorsCall(ap);
+		//asyncCall(ap);
+		executeTask(ap);
+		while(true) {
+			
+		}
 	}
 
 	public static void AopCall(ApplicationContext ap) {
@@ -235,6 +246,35 @@ public class App {
 //			System.out.println(action.getInvalidValue());
 //			System.out.println(action.getMessage());
 //		});
+	}
+	
+	public static void asyncCall(ApplicationContext ap) throws InterruptedException, ExecutionException {
+		ShedulerAndAsync shClass = (ShedulerAndAsync)ap.getBean("classForShedulerTest");
+		long before = System.currentTimeMillis();
+		shClass.methodForAsyncTest();
+		shClass.methodForAsyncTest();
+		shClass.methodForAsyncTest();
+		long after = System.currentTimeMillis();
+		System.out.println(after-before);
+//		for(int i=0;i<10;i++) {
+		 before = System.currentTimeMillis();
+		CompletableFuture<DateTime> frst = shClass.methodForAsyncTestWithParamsAndRes("01-01-1000");
+		CompletableFuture<DateTime> scnd = shClass.methodForAsyncTestWithParamsAndRes("01-01-2400");
+		CompletableFuture<DateTime> trd = shClass.methodForAsyncTestWithParamsAndRes("15-11-2200");
+		CompletableFuture.allOf(frst,scnd,trd).join();
+		 after = System.currentTimeMillis();
+		System.out.println(after-before);
+//		}
+		System.out.println(frst.get());
+		System.out.println(scnd.get());
+		System.out.println(trd.get());
+
+	}
+	
+	public static void executeTask(ApplicationContext ap) {
 		
+		//Thread task
+		TaskToExecute taskToExecute = ap.getBean(TaskToExecute.class);
+		taskToExecute.executeTask(10);
 	}
 }

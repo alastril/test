@@ -1,10 +1,12 @@
-package my.myname.validation.validators;
+package my.myname.validation.validators.class_test;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
+
+import my.myname.validation.validators.AnnotationForValidation;
 
 
 @Component

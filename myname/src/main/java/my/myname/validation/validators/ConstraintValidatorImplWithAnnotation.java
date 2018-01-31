@@ -3,6 +3,8 @@ package my.myname.validation.validators;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import my.myname.validation.validators.class_test.ClassforValidationTests;
+
 /**
  * The Class ConstraintValidatorImplWithAnnotation.
  * Validate {@link ClassforValidationTests} with help of annotation {@link AnnotationForValidation}
