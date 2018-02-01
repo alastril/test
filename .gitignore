@@ -11,3 +11,8 @@ myname/.classpath
 myname/.classpath
 myname/.classpath
 myname/.project
+*.name
+myname/.settings/org.eclipse.wst.common.project.facet.core.xml
+myname/.settings/org.eclipse.wst.jsdt.ui.superType.container
+myname/.settings/org.eclipse.wst.common.component
+myname/.settings/.jsdtscope

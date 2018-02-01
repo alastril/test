@@ -19,6 +19,7 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.format.AnnotationFormatterFactory;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
+import org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.ObjectError;
@@ -29,9 +30,9 @@ import my.myname.anotations.AnotationFormater;
 import my.myname.aop.AspectTest;
 import my.myname.aop.PointCut;
 import my.myname.aop.SimpleBean;
-import my.myname.crud_spr_data.AnimalsService;
-import my.myname.crud_spr_data.FoodService;
-import my.myname.crud_spr_data.ZooDao;
+import my.myname.crud_spr_data.interfaces.AnimalsService;
+import my.myname.crud_spr_data.interfaces.FoodService;
+import my.myname.crud_spr_data.interfaces.ZooDao;
 import my.myname.entity.Animals;
 import my.myname.entity.Food;
 import my.myname.entity.Zoo;
@@ -56,17 +57,18 @@ public class App {
 		FoodService fs = (FoodService) ap.getBean("FoodService");
 
 		// ZooSaveCall(ap);
-		// FoodSaveCall(ap);
+		 FoodSaveCall(ap);
 		// formatersCall(ap);
 		// JTACall(ap);
 		// converterCall(ap);
 		// AopCall(ap);
 		//validatorsCall(ap);
 		//asyncCall(ap);
-		executeTask(ap);
-		while(true) {
-			
-		}
+		//executeTask(ap);
+		 httpInvoker(ap);//need deploy application to servlet container(tomcat)
+//		while(true) {
+//			
+//		}
 	}
 
 	public static void AopCall(ApplicationContext ap) {
@@ -272,9 +274,16 @@ public class App {
 	}
 	
 	public static void executeTask(ApplicationContext ap) {
-		
 		//Thread task
 		TaskToExecute taskToExecute = ap.getBean(TaskToExecute.class);
 		taskToExecute.executeTask(10);
+	}
+	
+	public static void httpInvoker(ApplicationContext ap) {
+		System.out.println("httpInvoker!!!");
+		FoodService fs = (FoodService) ap.getBean("remoteFoodService");
+		for(Food food: fs.findAll()){
+			System.out.println("food:" + food);
+		};
 	}
 }

@@ -1,4 +1,4 @@
-package my.myname.crud_spr_data;
+package my.myname.crud_spr_data.impl;
 
 
 import java.util.ArrayList;
@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import my.myname.crud_spr_data.AnimalsRepository;
+import my.myname.crud_spr_data.interfaces.AnimalsService;
 import my.myname.entity.Animals;
 
 

@@ -91,7 +91,7 @@ public class ClassForShedulerTest implements ShedulerAndAsync{
 	/* (non-Javadoc)
 	 * @see my.myname.shedulers.ShedulerAndAsync#methodForSheduler()
 	 */
-	@Scheduled(cron="0/20 * * * * *")
+	//@Scheduled(cron="0/20 * * * * *")
 	@Override
 	public void methodForSheduler() {
 		System.out.println("methodForSheduler!!!");

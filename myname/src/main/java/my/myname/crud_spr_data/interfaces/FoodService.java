@@ -1,4 +1,4 @@
-package my.myname.crud_spr_data;
+package my.myname.crud_spr_data.interfaces;
 
 
 import java.util.List;

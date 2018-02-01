@@ -19,9 +19,10 @@
          http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
          http://www.springframework.org/schema/context
          http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-         
-<import resource="app-config_JTA.xml"/>
-<import resource="app-config_Sheduler.xml"/>
+
+	<import resource="app-config_JTA.xml" />
+	<import resource="app-config_Sheduler.xml" />
+	<import resource="app-config_httpInvoker.xml" />
 	<context:annotation-config />
 	<tx:annotation-driven />
 	<aop:aspectj-autoproxy proxy-target-class="true" />
@@ -60,8 +61,7 @@
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
 		p:dataSource-ref="dataSource" p:packagesToScan="my.myname"
-		p:hibernateProperties-ref="hibernateProperties"
-		 />
+		p:hibernateProperties-ref="hibernateProperties" />
 
 	<util:properties id="hibernateProperties">
 		<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
@@ -76,28 +76,48 @@
 
 
 
-<!-- Converters ("conversionService" name - don't change, AppContx override default converter factory bean) -->
-<!-- <bean id="conversionService"  class="org.springframework.context.support.ConversionServiceFactoryBean"> TEST-->
-		
-<bean id="conversionService" class = "org.springframework.format.support.FormattingConversionServiceFactoryBean">
-	<property name="converters">
-		<list>
-			<bean class="my.myname.validation.converters.StringToDateConverter"></bean>
-			<bean class="my.myname.validation.converters.SimpleBeanTOAnotherTypeConverter"></bean>
-		</list>
-	</property>
-<property name="formatters">
-<list>
-	<bean class="my.myname.validation.formaters.Formater"></bean>
-	<bean class="my.myname.validation.formaters.TestAnotationFormatter"></bean>
-</list>
-</property></bean>
+	<!-- Converters ("conversionService" name - don't change, AppContx override 
+		default converter factory bean) -->
+	<!-- <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean"> 
+		TEST -->
 
-<!-- not jsr_349 -->
-<bean id="validatorJSR_303" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"></bean>
+	<bean id="conversionService"
+		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="converters">
+			<list>
+				<bean class="my.myname.validation.converters.StringToDateConverter"></bean>
+				<bean
+					class="my.myname.validation.converters.SimpleBeanTOAnotherTypeConverter"></bean>
+			</list>
+		</property>
+		<property name="formatters">
+			<list>
+				<bean class="my.myname.validation.formaters.Formater"></bean>
+				<bean class="my.myname.validation.formaters.TestAnotationFormatter"></bean>
+			</list>
+		</property>
+	</bean>
+
+	<!-- not jsr_349 -->
+	<bean id="validatorJSR_303"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"></bean>
 
 
-<!-- TEST BEAN -->
-<bean id="dateConvert" class="my.myname.SimpleBeanImpl"
-	p:dt= "14-05-2036" p:name="HELLO, bitch!!!" /> 
+	<!-- TEST BEAN -->
+	<bean id="dateConvert" class="my.myname.SimpleBeanImpl" p:dt="14-05-2036"
+		p:name="HELLO, bitch!!!" />
+
+
+<!-- 	<bean name="foodExporter" -->
+<!-- 		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter"> -->
+<!-- 		<property name="service" ref="FoodService" /> -->
+<!-- 		<property name="serviceInterface" value="my.myname.crud_spr_data.interfaces.FoodService" /> -->
+<!-- 	</bean> -->
+
+<!-- 	<bean id="remoteFoodService" -->
+<!-- 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean"> -->
+<!-- 		<property name="serviceUrl" -->
+<!-- 			value="http://localhost:8080/myname/remoting/FoodService" /> -->
+<!-- 		<property name="serviceInterface" value="my.myname.crud_spr_data.interfaces.FoodService" /> -->
+<!-- 	</bean>  -->
 </beans> 

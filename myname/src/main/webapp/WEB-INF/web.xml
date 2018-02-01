@@ -1,0 +1,26 @@
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+	<display-name>Spring НТТР Invoker Sample</display-name>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/classes/app-config.xml</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+	<servlet>
+<!-- 	important! servlet name must be as bean name of HttpRequestHandlerServlet in spring config -->
+		<servlet-name>foodExporter</servlet-name>
+		<servlet-class>
+			org.springframework.web.context.support.HttpRequestHandlerServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>foodExporter</servlet-name>
+		<url-pattern>/remoting/FoodService</url-pattern>
+	</servlet-mapping>
+</web-app> 
