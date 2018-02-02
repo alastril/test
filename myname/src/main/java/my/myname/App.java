@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import javax.jms.MessageConsumer;
 import javax.validation.Validator;
 
+import org.apache.activemq.ActiveMQMessageConsumer;
 import org.joda.time.DateTime;
 import org.springframework.aop.config.AopNamespaceUtils;
 import org.springframework.aop.framework.ProxyFactory;
@@ -36,6 +38,7 @@ import my.myname.crud_spr_data.interfaces.ZooDao;
 import my.myname.entity.Animals;
 import my.myname.entity.Food;
 import my.myname.entity.Zoo;
+import my.myname.jms.JmsProduser;
 import my.myname.shedulers.ClassForShedulerTest;
 import my.myname.shedulers.ShedulerAndAsync;
 import my.myname.shedulers.TaskToExecute;
@@ -55,9 +58,11 @@ public class App {
 
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
 		FoodService fs = (FoodService) ap.getBean("FoodService");
-
+		
+		JmsProduser jp = (JmsProduser)ap.getBean("jmsProduser");
+		jp.send("HElllo!!!!1111");
 		// ZooSaveCall(ap);
-		 FoodSaveCall(ap);
+		// FoodSaveCall(ap);
 		// formatersCall(ap);
 		// JTACall(ap);
 		// converterCall(ap);
@@ -65,7 +70,7 @@ public class App {
 		//validatorsCall(ap);
 		//asyncCall(ap);
 		//executeTask(ap);
-		 httpInvoker(ap);//need deploy application to servlet container(tomcat)
+		// httpInvoker(ap);//need deploy application to servlet container(tomcat)
 //		while(true) {
 //			
 //		}

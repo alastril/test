@@ -4,6 +4,8 @@
 	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:amq="http://activemq.apache.org/schema/core"
+	xmlns:jms="http://www.springframework.org/schema/jms" 
 	xsi:schemaLocation="
      http://www.springframework.org/schema/aop
      http://www.springframework.org/schema/aop/spring-aop.xsd
@@ -18,7 +20,11 @@
 		 http://www.springframework.org/schema/data/jpa
          http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
          http://www.springframework.org/schema/context
-         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+         http://www.springframework.org/schema/context/spring-context-3.0.xsd
+         http://activemq.apache.org/schema/core 
+         http://activemq.apache.org/schema/core/activemq-core.xsd
+		http://www.springframework.org/schema/jms
+		http://www.springframework.org/schema/jms/spring-jms.xsd">
 
 	<import resource="app-config_JTA.xml" />
 	<import resource="app-config_Sheduler.xml" />
@@ -108,16 +114,25 @@
 		p:name="HELLO, bitch!!!" />
 
 
-<!-- 	<bean name="foodExporter" -->
-<!-- 		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter"> -->
-<!-- 		<property name="service" ref="FoodService" /> -->
-<!-- 		<property name="serviceInterface" value="my.myname.crud_spr_data.interfaces.FoodService" /> -->
-<!-- 	</bean> -->
+<amq:broker useJmx="true" persistent="false">
+	<amq:transportConnectors>
+		<amq:transportConnector uri="tcp://localhost:61617"></amq:transportConnector>
+	</amq:transportConnectors>
+</amq:broker>
+ <amq:connectionFactory id="jmsFactory" brokerURL="tcp://localhost:61617"/>
 
-<!-- 	<bean id="remoteFoodService" -->
-<!-- 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean"> -->
-<!-- 		<property name="serviceUrl" -->
-<!-- 			value="http://localhost:8080/myname/remoting/FoodService" /> -->
-<!-- 		<property name="serviceInterface" value="my.myname.crud_spr_data.interfaces.FoodService" /> -->
-<!-- 	</bean>  -->
+<amq:queue id="destination"  physicalName="queueJms"/>
+<bean id="myJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+	<property name="connectionFactory">
+		<bean class="org.springframework.jms.connection.SingleConnectionFactory">
+			<property name="targetConnectionFactory" ref="jmsFactory"/>
+		</bean>
+	</property>
+</bean>
+
+<!-- <jms:annotation-driven /> -->
+<jms:listener-container container-type="default" acknowledge="auto" connection-factory="jmsFactory">
+	<jms:listener destination="queueJms" ref="myJmsListener"/>
+</jms:listener-container>
+
 </beans> 
