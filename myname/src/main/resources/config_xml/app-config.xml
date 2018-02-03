@@ -4,8 +4,7 @@
 	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
-	xmlns:amq="http://activemq.apache.org/schema/core"
-	xmlns:jms="http://www.springframework.org/schema/jms" 
+
 	xsi:schemaLocation="
      http://www.springframework.org/schema/aop
      http://www.springframework.org/schema/aop/spring-aop.xsd
@@ -20,12 +19,9 @@
 		 http://www.springframework.org/schema/data/jpa
          http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
          http://www.springframework.org/schema/context
-         http://www.springframework.org/schema/context/spring-context-3.0.xsd
-         http://activemq.apache.org/schema/core 
-         http://activemq.apache.org/schema/core/activemq-core.xsd
-		http://www.springframework.org/schema/jms
-		http://www.springframework.org/schema/jms/spring-jms.xsd">
+         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
+	<import resource="app-config_JMS.xml" />
 	<import resource="app-config_JTA.xml" />
 	<import resource="app-config_Sheduler.xml" />
 	<import resource="app-config_httpInvoker.xml" />
@@ -33,6 +29,11 @@
 	<tx:annotation-driven />
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 	<context:component-scan base-package="my.myname" />
+	<context:property-placeholder location="properties/app.properties"/>
+<!-- <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"> -->
+<!--   <property name="locations" value="app.properties"> -->
+<!--   </property> -->
+<!-- </bean> -->
 
 	<jpa:repositories base-package="my.myname"
 		entity-manager-factory-ref="entityManagerFactory"
@@ -42,8 +43,12 @@
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
 		p:driverClassName="com.mysql.jdbc.Driver" p:url="jdbc:mysql://localhost:3306/my_hibernate"
-		p:username="root" p:password="admin" />
+		p:username="root" p:password="admin" >
+		</bean>
+	<util:properties id="dataSourceProperties">
+		<prop key="defaultAutoCommit">false</prop>
 
+	</util:properties>
 	<bean id="transactionManagerSession"
 		class="org.springframework.orm.hibernate5.HibernateTransactionManager"
 		p:sessionFactory-ref="sessionFactory">
@@ -70,14 +75,16 @@
 		p:hibernateProperties-ref="hibernateProperties" />
 
 	<util:properties id="hibernateProperties">
-		<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+		<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
 		<prop key="hibernate.max_fetch_depth">3</prop>
-		<prop key="hibernate. jdЬc.fetch_size">50</prop>
-		<prop key="hibernate.jdЬc.batch_size">lO</prop>
+		<prop key="hibernate.jdЬc.fetch_size">50</prop>
+		<prop key="hibernate.jdЬc.batch_size">10</prop>
 		<prop key="hibernate.show_sql">false</prop>
 		<prop key="hibernate.format_sql">true</prop>
 		<prop key="hibernate.hbm2ddl.auto">create-drop</prop>
 		<prop key="hibernate.id.new_generator_mappings">false</prop>
+		<prop key="hibernate.use_identifier_rollback">true</prop>
+<!-- 		<prop key="hibernate.connection.autocommit">after_statement</prop> -->
 	</util:properties>
 
 
@@ -114,25 +121,5 @@
 		p:name="HELLO, bitch!!!" />
 
 
-<amq:broker useJmx="true" persistent="false">
-	<amq:transportConnectors>
-		<amq:transportConnector uri="tcp://localhost:61617"></amq:transportConnector>
-	</amq:transportConnectors>
-</amq:broker>
- <amq:connectionFactory id="jmsFactory" brokerURL="tcp://localhost:61617"/>
-
-<amq:queue id="destination"  physicalName="queueJms"/>
-<bean id="myJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-	<property name="connectionFactory">
-		<bean class="org.springframework.jms.connection.SingleConnectionFactory">
-			<property name="targetConnectionFactory" ref="jmsFactory"/>
-		</bean>
-	</property>
-</bean>
-
-<!-- <jms:annotation-driven /> -->
-<jms:listener-container container-type="default" acknowledge="auto" connection-factory="jmsFactory">
-	<jms:listener destination="queueJms" ref="myJmsListener"/>
-</jms:listener-container>
 
 </beans> 

@@ -29,7 +29,7 @@
 
 		<property name="xaProperties">
 			<props>
-			<prop key="pinGlobalTxToPhysicalConnection">true</prop>
+			
 				<prop key="url">jdbc:mysql://localhost:3306/my_hibernate</prop>
 				<prop key="user">root</prop>
 				<prop key="password">admin</prop>
@@ -45,7 +45,6 @@
 
 		<property name="xaProperties">
 			<props>
-			    <prop key="pinGlobalTxToPhysicalConnection">true</prop>
 				<prop key="url">jdbc:mysql://localhost:3306/test_jta</prop>
 				<prop key="user">root</prop>
 				<prop key="password">admin</prop>
@@ -92,7 +91,7 @@
       com.atomikos.icatch.jta.hibernate3.TransactionManagerLookup
    </prop> 
 				<prop key="hibernate.dialect">
-					org.hibernate.dialect.MySQL5Dialect
+					org.hibernate.dialect.MySQL5InnoDBDialect
 				</prop>
 				<prop key="hibernate.max_fetch_depth">3</prop>
 				<prop key="hibernate.jdЬc.fetch_size">50</prop>
@@ -124,9 +123,6 @@
 		class="org.springframework.transaction.jta.JtaTransactionManager" depends-on="atomikosTransactionМanager, atomikosUserTransaction">
 		<property name="transactionManager" ref="atomikosTransactionМanager" />
 		<property name="userTransaction" ref="atomikosUserTransaction" />
-		<property name="allowCustomIsolationLevels" value="true"></property>
 	</bean>
-
-
 
 </beans> 

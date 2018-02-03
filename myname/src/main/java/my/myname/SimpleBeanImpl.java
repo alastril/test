@@ -1,11 +1,10 @@
 package my.myname;
 
 
+import java.io.Serializable;
+
 import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.stereotype.Component;
 
 import my.myname.anotations.AnotationFormater;
@@ -13,12 +12,23 @@ import my.myname.aop.SimpleBean;
 
 @Component("simpleBeanImpl")
 @Scope("prototype")
-public class SimpleBeanImpl implements SimpleBean {
+public class SimpleBeanImpl implements SimpleBean, Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4380056633175980679L;
 	private long id;
 	@AnotationFormater(oldChar='!', newChar='.')
 	private String name;
 	private DateTime dt;
+	
+	public SimpleBeanImpl() {
+	}
+	
+	public SimpleBeanImpl(String name) {
+		this.name=name;
+	}
 	
 	@Override
 	public String sayHello(String msg) {

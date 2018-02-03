@@ -10,16 +10,16 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import my.myname.crud_spr_data.interfaces.ZooDao;
 import my.myname.entity.Animals;
 import my.myname.entity.Food;
 import my.myname.entity.Zoo;
+import my.myname.jms.JmsProduser;
 
 @Repository("ZooDao")
-@Transactional("transactionManagerSession")
+@Transactional(transactionManager ="transactionManagerSession")
 public class ZooDaoImpl implements ZooDao {
 
 	@Autowired
@@ -34,20 +34,24 @@ public class ZooDaoImpl implements ZooDao {
 	EntityManager emA;
 	@PersistenceContext(unitName="emfB")
 	EntityManager emB;
-	
+	@Autowired
+	JmsProduser call;
 	@Autowired
 	@Qualifier("entityManagerFactory")
 	EntityManager em;
 	
 	@Override
 	public Zoo save(Zoo zoo) {
+	
 		getSessionFactory().getCurrentSession().saveOrUpdate(zoo);
 		return zoo;
 	}
 	@Override
 	public Animals save(Animals animals) {
-		
 		getSessionFactory().getCurrentSession().saveOrUpdate(animals);
+//		if(animals!=null)
+//			throw new RuntimeException("3424");
+//		
 		return animals;
 	}
 
@@ -57,22 +61,28 @@ public class ZooDaoImpl implements ZooDao {
 		return food;
 	}
 	
-	@Transactional(transactionManager = "transactionМanagerAtomicos")
+	@Transactional(transactionManager = "transactionМanagerAtomicos", rollbackFor = Exception.class)
 	public List<Animals> saveJTA(Animals animals, Animals duplicate) {
 		List<Animals> anls = new ArrayList<>();
 		if (!emA.isJoinedToTransaction() && !emB.isJoinedToTransaction()) {
 			emA.joinTransaction();
 			emB.joinTransaction();
+			
 		}
 		if(animals.getId()==null && animals.getId()==null){
 			System.out.println("persist");
 			emA.persist(animals);
 			emB.persist(duplicate);
+			call.sendToQueue("JMS: JTA persist!!!!");
+			call.sendToTopic("JMS: JTA persist!!!!");
 		} else {
 			System.out.println("merge");
 			emA.merge(animals);
 			emB.merge(duplicate);
+			call.sendToQueue("JMS: JTA merge!!!!");
+			call.sendToTopic("JMS: JTA merge!!!!");
 		}
+		//int i = 1/0; check for rollback
 		anls.add(animals);
 		anls.add(duplicate);
 		return anls;

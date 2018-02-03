@@ -1,37 +1,24 @@
 package my.myname;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import javax.jms.MessageConsumer;
 import javax.validation.Validator;
 
-import org.apache.activemq.ActiveMQMessageConsumer;
 import org.joda.time.DateTime;
-import org.springframework.aop.config.AopNamespaceUtils;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import org.springframework.format.AnnotationFormatterFactory;
-import org.springframework.format.support.DefaultFormattingConversionService;
-import org.springframework.format.support.FormattingConversionServiceFactoryBean;
-import org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.DataBinder;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import my.myname.anotations.AnotationFormater;
-import my.myname.aop.AspectTest;
 import my.myname.aop.PointCut;
-import my.myname.aop.SimpleBean;
 import my.myname.crud_spr_data.interfaces.AnimalsService;
 import my.myname.crud_spr_data.interfaces.FoodService;
 import my.myname.crud_spr_data.interfaces.ZooDao;
@@ -39,12 +26,9 @@ import my.myname.entity.Animals;
 import my.myname.entity.Food;
 import my.myname.entity.Zoo;
 import my.myname.jms.JmsProduser;
-import my.myname.shedulers.ClassForShedulerTest;
 import my.myname.shedulers.ShedulerAndAsync;
 import my.myname.shedulers.TaskToExecute;
 import my.myname.validation.converters.AnotherTypeForConvert;
-import my.myname.validation.formaters.FormaterForAnotation;
-import my.myname.validation.formaters.TestAnotationFormatter;
 import my.myname.validation.validators.ValidatorImpl;
 import my.myname.validation.validators.class_test.ClassforValidationTests;
 
@@ -54,26 +38,27 @@ import my.myname.validation.validators.class_test.ClassforValidationTests;
  */
 public class App {
 	public static void main(String[] args) throws Throwable {
-		ApplicationContext ap = new GenericXmlApplicationContext("classpath:app-config.xml");
+		ApplicationContext ap = new GenericXmlApplicationContext("classpath:config_xml/app-config.xml");
 
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
 		FoodService fs = (FoodService) ap.getBean("FoodService");
 		
-		JmsProduser jp = (JmsProduser)ap.getBean("jmsProduser");
-		jp.send("HElllo!!!!1111");
+		
 		// ZooSaveCall(ap);
-		// FoodSaveCall(ap);
+		// FoodSaveCall(ap); //need for httpInvoker
 		// formatersCall(ap);
-		// JTACall(ap);
+		 JTACall(ap);
 		// converterCall(ap);
 		// AopCall(ap);
 		//validatorsCall(ap);
 		//asyncCall(ap);
 		//executeTask(ap);
+//		jmsCall(ap);
 		// httpInvoker(ap);//need deploy application to servlet container(tomcat)
-//		while(true) {
-//			
-//		}
+//		 while(true) {
+//				
+//			}
+		
 	}
 
 	public static void AopCall(ApplicationContext ap) {
@@ -181,8 +166,9 @@ public class App {
 		an.setName("sobaken");
 		Animals an2 = new Animals();
 		an2.setName("kotyara");
+		//zd.save(an);
 		zd.saveJTA(an, an2);
-		zd.saveJTA((Animals) an2.clone(), (Animals) an.clone());
+		zd.saveJTA(an2, an);
 		List<Animals> al = zd.getListAnimals();
 		for (Animals a : al) {
 			System.out.println(a.toString());
@@ -286,9 +272,17 @@ public class App {
 	
 	public static void httpInvoker(ApplicationContext ap) {
 		System.out.println("httpInvoker!!!");
+
 		FoodService fs = (FoodService) ap.getBean("remoteFoodService");
 		for(Food food: fs.findAll()){
 			System.out.println("food:" + food);
 		};
+
+	}
+	
+	public static void jmsCall(ApplicationContext ap) {
+		JmsProduser jp = (JmsProduser)ap.getBean("jmsProduser");
+		jp.sendToQueue("HElllo!!!!1111");
+		jp.sendToTopic("HElllo!!!!1111");
 	}
 }

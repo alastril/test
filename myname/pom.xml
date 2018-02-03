@@ -15,7 +15,8 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<includes>
-					<include>**/*.xml</include>
+					<include>**/config_xml/*.xml</include>
+					<include>**/properties/*.properties</include>
 				</includes>
 			</resource>
 		</resources>
@@ -53,7 +54,7 @@
 <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-core</artifactId>
-    <version>5.0.2.RELEASE</version>
+    <version>5.0.3.RELEASE</version>
 </dependency>
 <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
 <dependency>
@@ -107,7 +108,7 @@
 <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-aop</artifactId>
-    <version>5.0.2.RELEASE</version>
+    <version>5.0.3.RELEASE</version>
 </dependency>
 <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
 <dependency>
@@ -171,17 +172,72 @@
     <version>5.0.2.RELEASE</version>
 </dependency>
 <!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-all -->
+<!-- <dependency> -->
+<!--     <groupId>org.apache.activemq</groupId> -->
+<!--     <artifactId>activemq-all</artifactId> -->
+<!--     <version>5.15.2</version> -->
+<!-- </dependency> -->
+<!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-core -->
 <dependency>
     <groupId>org.apache.activemq</groupId>
-    <artifactId>activemq-all</artifactId>
-    <version>5.15.2</version>
+    <artifactId>activemq-core</artifactId>
+    <version>5.7.0</version>
 </dependency>
-<!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-spring -->
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-jms -->
 <dependency>
-    <groupId>org.apache.activemq</groupId>
-    <artifactId>activemq-spring</artifactId>
-    <version>5.15.2</version>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-jms</artifactId>
+    <version>5.0.3.RELEASE</version>
 </dependency>
+<dependency>
+    <groupId>javax.jms</groupId>
+    <artifactId>javax.jms-api</artifactId>
+    <version>2.0.1</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.xbean</groupId>
+    <artifactId>xbean-spring</artifactId>
+    <version>3.7</version>
+</dependency>
+
+<!-- <dependency> -->
+<!--     <groupId>org.apache.activemq</groupId> -->
+<!--     <artifactId>activemq-broker</artifactId> -->
+<!--     <version>5.15.2</version> -->
+<!-- </dependency> -->
+<!-- <dependency> -->
+<!--     <groupId>org.apache.activemq</groupId> -->
+<!--     <artifactId>activemq-client</artifactId> -->
+<!--     <version>5.15.2</version> -->
+<!-- </dependency> -->
+<!-- <dependency> -->
+<!--     <groupId>org.apache.activemq</groupId> -->
+<!--     <artifactId>activemq-kahadb-store</artifactId> -->
+<!--     <version>5.15.2</version> -->
+<!-- </dependency> -->
+
+<!-- <dependency> -->
+<!--     <groupId>geronimo-spec</groupId> -->
+<!--     <artifactId>geronimo-spec-jms</artifactId> -->
+<!--     <version>1.1-rc4</version> -->
+<!-- </dependency> -->
+<!-- <dependency> -->
+<!--     <groupId>geronimo-spec</groupId> -->
+<!--     <artifactId>geronimo-spec-jta</artifactId> -->
+<!--     <version>1.0.1B-rc4</version> -->
+<!-- </dependency> -->
+<!-- <dependency> -->
+<!--     <groupId>geronimo-spec</groupId> -->
+<!--     <artifactId>geronimo-spec-j2ee-management</artifactId> -->
+<!--     <version>1.0-rc4</version> -->
+<!-- </dependency> -->
+
+
+<!-- <dependency> -->
+<!--     <groupId>org.apache.activemq</groupId> -->
+<!--     <artifactId>activemq-spring</artifactId> -->
+<!--     <version>5.15.2</version> -->
+<!-- </dependency> -->
 
   </dependencies>
 <dependencyManagement>

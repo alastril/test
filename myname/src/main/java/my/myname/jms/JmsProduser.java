@@ -1,6 +1,7 @@
 package my.myname.jms;
 
 import javax.jms.Queue;
+import javax.jms.Topic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,13 +11,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class JmsProduser {
 	@Autowired
+	@Qualifier("jmsTemplateAtomicos")
 	JmsTemplate jms;
 	
 	@Autowired
-	Queue destination;
+	Queue queueDest;
+	
+	@Autowired
+	Topic topicDest;
 
-	public void send(String msg) {
-		jms.convertAndSend(destination, msg);
+	public void sendToTopic(String msg) {
+		jms.convertAndSend(topicDest, msg);
+	}
+	public void sendToQueue(String msg) {
+		jms.convertAndSend(queueDest, msg);
 	}
 
 	public JmsTemplate getJms() {
@@ -26,13 +34,19 @@ public class JmsProduser {
 	public void setJms(JmsTemplate jms) {
 		this.jms = jms;
 	}
-
-	public Queue getDestination() {
-		return destination;
+	public Queue getQueueDest() {
+		return queueDest;
+	}
+	public void setQueueDest(Queue queueDest) {
+		this.queueDest = queueDest;
+	}
+	public Topic getTopicDest() {
+		return topicDest;
+	}
+	public void setTopicDest(Topic topicDest) {
+		this.topicDest = topicDest;
 	}
 
-	public void setDestination(Queue destination) {
-		this.destination = destination;
-	}
+
 	
 }

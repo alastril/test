@@ -7,7 +7,7 @@
          http://www.springframework.org/schema/context
          http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-<!-- Important! For HttpInvokerServiceExporter bean "id" must be the same as servlet name in web.xml -->
+<!-- Create service with help of servlet(server side). Important! For HttpInvokerServiceExporter bean-"id" must be the same as servlet name in web.xml  -->
 	<bean id="foodExporter"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
 		<property name="service" ref="FoodService" />
@@ -15,6 +15,7 @@
 			value="my.myname.crud_spr_data.interfaces.FoodService" />
 	</bean>
 
+<!-- This bean(client) can do request to server -->
 	<bean id="remoteFoodService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl"
