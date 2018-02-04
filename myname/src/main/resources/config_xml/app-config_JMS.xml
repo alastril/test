@@ -24,7 +24,7 @@
 </amq:broker>
 
 <!-- Connection factory, need for working consumers and producer with server  -->
- <amq:connectionFactory id="jmsFactory" brokerURL="${jms.server.url}${jms.server.remote.port}"/>
+ <amq:connectionFactory id="jmsFactory" brokerURL="${jms.server.url}${jms.server.local.port}"/>
 
 <amq:queue id="queueDest"  physicalName="${jms.queue.name}"/>
 <amq:topic id="topicDest" physicalName="${jms.topic.name}"/>
@@ -58,7 +58,7 @@
     <property name="uniqueResourceName" value="ActiveMQXA" />
     <property name="xaConnectionFactory">
         <bean class="org.apache.activemq.ActiveMQXAConnectionFactory">
-            <property name="brokerURL" value="${jms.server.url}${jms.server.remote.port}" />
+            <property name="brokerURL" value="${jms.server.url}${jms.server.local.port}" />
 <!--             <property name="userName" value="employ123"/> -->
 <!--                     <property name="password" value="password123"/> -->
         </bean>

@@ -12,10 +12,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import my.myname.crud_spr_data.entity.Animals;
+import my.myname.crud_spr_data.entity.Food;
+import my.myname.crud_spr_data.entity.Zoo;
 import my.myname.crud_spr_data.interfaces.ZooDao;
-import my.myname.entity.Animals;
-import my.myname.entity.Food;
-import my.myname.entity.Zoo;
 import my.myname.jms.JmsProduser;
 
 @Repository("ZooDao")

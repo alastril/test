@@ -33,7 +33,7 @@ public class AspectTest {
 	}
 	
 	
-	@Before("execution(* my.myname.crud_spr_data.*.save(my.myname.entity.Food || my.myname.entity.Animals)) && args(object)")
+	@Before("execution(* my.myname.crud_spr_data.*.save(my.myname.crud_spr_data.entity.Food || my.myname.crud_spr_data.entity.Animals)) && args(object)")
 	public void callForZoo(JoinPoint joinPoint, Object object) throws Throwable{
 		System.out.println(joinPoint.getSignature().getDeclaringType());
 		Arrays.asList(joinPoint.getArgs()).stream().forEach(action -> {System.out.println("args:["+action.toString() +"]");});

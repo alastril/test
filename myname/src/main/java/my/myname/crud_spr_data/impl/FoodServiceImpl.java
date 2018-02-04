@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import my.myname.crud_spr_data.AnimalsRepository;
 import my.myname.crud_spr_data.FoodRepository;
+import my.myname.crud_spr_data.entity.Food;
 import my.myname.crud_spr_data.interfaces.FoodService;
-import my.myname.entity.Food;
 
 
 @Repository(value="FoodService")

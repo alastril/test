@@ -17,6 +17,7 @@
 				<includes>
 					<include>**/config_xml/*.xml</include>
 					<include>**/properties/*.properties</include>
+					<include>**/oxm_mapping/*.xml</include>
 				</includes>
 			</resource>
 		</resources>
@@ -169,7 +170,7 @@
 <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-web</artifactId>
-    <version>5.0.2.RELEASE</version>
+    <version>5.0.3.RELEASE</version>
 </dependency>
 <!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-all -->
 <!-- <dependency> -->
@@ -200,44 +201,20 @@
     <version>3.7</version>
 </dependency>
 
-<!-- <dependency> -->
-<!--     <groupId>org.apache.activemq</groupId> -->
-<!--     <artifactId>activemq-broker</artifactId> -->
-<!--     <version>5.15.2</version> -->
-<!-- </dependency> -->
-<!-- <dependency> -->
-<!--     <groupId>org.apache.activemq</groupId> -->
-<!--     <artifactId>activemq-client</artifactId> -->
-<!--     <version>5.15.2</version> -->
-<!-- </dependency> -->
-<!-- <dependency> -->
-<!--     <groupId>org.apache.activemq</groupId> -->
-<!--     <artifactId>activemq-kahadb-store</artifactId> -->
-<!--     <version>5.15.2</version> -->
-<!-- </dependency> -->
 
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
 <!-- <dependency> -->
-<!--     <groupId>geronimo-spec</groupId> -->
-<!--     <artifactId>geronimo-spec-jms</artifactId> -->
-<!--     <version>1.1-rc4</version> -->
+<!--     <groupId>com.fasterxml.jackson.core</groupId> -->
+<!--     <artifactId>jackson-core</artifactId> -->
+<!--     <version>2.9.4</version> -->
 <!-- </dependency> -->
-<!-- <dependency> -->
-<!--     <groupId>geronimo-spec</groupId> -->
-<!--     <artifactId>geronimo-spec-jta</artifactId> -->
-<!--     <version>1.0.1B-rc4</version> -->
-<!-- </dependency> -->
-<!-- <dependency> -->
-<!--     <groupId>geronimo-spec</groupId> -->
-<!--     <artifactId>geronimo-spec-j2ee-management</artifactId> -->
-<!--     <version>1.0-rc4</version> -->
-<!-- </dependency> -->
+<!-- https://mvnrepository.com/artifact/org.codehaus.castor/castor-xml -->
+<dependency>
+    <groupId>org.codehaus.castor</groupId>
+    <artifactId>castor-xml</artifactId>
+    <version>1.4.1</version>
+</dependency>
 
-
-<!-- <dependency> -->
-<!--     <groupId>org.apache.activemq</groupId> -->
-<!--     <artifactId>activemq-spring</artifactId> -->
-<!--     <version>5.15.2</version> -->
-<!-- </dependency> -->
 
   </dependencies>
 <dependencyManagement>

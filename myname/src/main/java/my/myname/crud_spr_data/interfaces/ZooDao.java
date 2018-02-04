@@ -2,9 +2,9 @@ package my.myname.crud_spr_data.interfaces;
 
 import java.util.List;
 
-import my.myname.entity.Animals;
-import my.myname.entity.Food;
-import my.myname.entity.Zoo;
+import my.myname.crud_spr_data.entity.Animals;
+import my.myname.crud_spr_data.entity.Food;
+import my.myname.crud_spr_data.entity.Zoo;
 
 public interface ZooDao {
 

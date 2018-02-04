@@ -14,9 +14,6 @@ import my.myname.aop.SimpleBean;
 @Scope("prototype")
 public class SimpleBeanImpl implements SimpleBean, Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 4380056633175980679L;
 	private long id;
 	@AnotationFormater(oldChar='!', newChar='.')

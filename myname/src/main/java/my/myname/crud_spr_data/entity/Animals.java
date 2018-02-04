@@ -1,4 +1,4 @@
-package my.myname.entity;
+package my.myname.crud_spr_data.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
