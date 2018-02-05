@@ -88,10 +88,10 @@
        org.hibernate.transaction.JTATransactionFactory 
    </prop> 
    <prop key="hibernate.transaction.manager_lookup_class"> 
-      com.atomikos.icatch.jta.hibernate3.TransactionManagerLookup
+      org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform
    </prop> 
 				<prop key="hibernate.dialect">
-					org.hibernate.dialect.MySQL5InnoDBDialect
+					org.hibernate.dialect.MySQL57Dialect
 				</prop>
 				<prop key="hibernate.max_fetch_depth">3</prop>
 				<prop key="hibernate.jdЬc.fetch_size">50</prop>

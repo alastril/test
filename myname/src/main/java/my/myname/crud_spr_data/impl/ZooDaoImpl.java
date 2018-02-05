@@ -82,7 +82,7 @@ public class ZooDaoImpl implements ZooDao {
 			call.sendToQueue("JMS: JTA merge!!!!");
 			call.sendToTopic("JMS: JTA merge!!!!");
 		}
-		//int i = 1/0; check for rollback
+//		int i = 1/0; //check for rollback
 		anls.add(animals);
 		anls.add(duplicate);
 		return anls;

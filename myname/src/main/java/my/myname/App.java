@@ -44,7 +44,7 @@ public class App {
 		FoodService fs = (FoodService) ap.getBean("FoodService");
 		
 		
-		// ZooSaveCall(ap);
+//		 ZooSaveCall(ap);
 		// FoodSaveCall(ap); //need for httpInvoker
 		// formatersCall(ap);
 		 JTACall(ap);
@@ -74,9 +74,10 @@ public class App {
 
 	public static void ZooSaveCall(ApplicationContext ap) throws Throwable {
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
+		AnimalsService as = (AnimalsService) ap.getBean("AnimalsService");
 		Zoo zoo = new Zoo();
 		zoo.setName("menskiy");
-		zoo.setDateCreation(new Date());
+		zoo.setDateCreation(new DateTime());
 		Animals animalSobaka = new Animals();
 		animalSobaka.setName("sobaka");
 		Food food = new Food();
@@ -91,6 +92,8 @@ public class App {
 
 		zoo.getAnimalsList().add(animalSobaka);
 		zoo.getAnimalsList().add(animalKot);
+		//animalSobaka.getZooList().add(zoo);
+		//animalKot.getZooList().add(zoo);
 
 		Zoo zooClone = (Zoo) zoo.clone();
 
@@ -105,7 +108,10 @@ public class App {
 				System.out.println(animals.toString());
 			}
 		}
+//		 zooClone = (Zoo) zoo.clone();
+		//as.deleteAnimals(animalSobaka);as.deleteAnimals(animalKot);
 		zd.deleteZoo(zoo);
+		
 	}
 
 	/**
@@ -160,7 +166,8 @@ public class App {
 	}
 
 	public static void JTACall(ApplicationContext ap) throws Throwable {
-
+//		org.hibernate.engine.transaction.jta.platfo
+		
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
 		Animals an = new Animals();
 		an.setName("sobaken");

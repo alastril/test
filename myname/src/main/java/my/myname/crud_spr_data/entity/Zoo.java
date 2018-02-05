@@ -21,6 +21,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +43,7 @@ public class Zoo implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String name;
-	private Date dateCreation;
+	private DateTime dateCreation;
 	private Set<Animals> animalsList = new HashSet<Animals>();
 	
 	@Id
@@ -59,12 +62,12 @@ public class Zoo implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
-	@Temporal(TemporalType.DATE)
+	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	@Column(name="DATE")
-	public Date getDateCreation() {
+	public DateTime getDateCreation() {
 		return dateCreation;
 	}
-	public void setDateCreation(Date dateCreation) {
+	public void setDateCreation(DateTime dateCreation) {
 		this.dateCreation = dateCreation;
 	}
 	@ManyToMany(cascade = CascadeType.ALL)

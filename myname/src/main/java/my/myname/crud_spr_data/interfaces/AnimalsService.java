@@ -10,4 +10,5 @@ public interface AnimalsService  {
 
 	public List<Animals> findAll();
 	public Animals save(Animals animals);
+	public void deleteAnimals(Animals animals);
 }

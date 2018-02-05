@@ -34,4 +34,9 @@ public class AnimalsServiceImpl implements AnimalsService  {
 		anim.ifPresent(consumer -> {animalsRepository.save(consumer);});
 		return animals;
 	}
+
+	@Override
+	public void deleteAnimals(Animals animals) {
+		animalsRepository.delete(animals);
+	}
 }
