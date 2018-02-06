@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,15 +21,31 @@ import javax.persistence.Table;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 @Entity
 @Table(name="ANIMALS")
 @Component
 @Scope(scopeName="prototype")
+
 public class Animals implements Serializable{
-	private static final long serialVersionUID = 2L;
+	
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1716262289447197232L;
+	@JacksonXmlProperty(localName="id", isAttribute=true)
 	private Long id;
+	@JacksonXmlProperty(localName="name")
 	private String name;
+	@JacksonXmlProperty(localName="zooList")
+	@JacksonXmlElementWrapper(useWrapping = false)
 	private Set<Zoo> zooList = new HashSet<Zoo>();
+	@JacksonXmlProperty(localName="foodList")
+	@JacksonXmlElementWrapper(useWrapping = false)
 	private List<Food> foodList = new ArrayList<Food>();
 	
 	@Id
@@ -47,7 +64,7 @@ public class Animals implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
-	@ManyToMany(cascade=CascadeType.ALL)
+	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@JoinTable(
 			name="zoo_animals",
 			joinColumns = @JoinColumn(name="id_animal"),
@@ -73,7 +90,7 @@ public class Animals implements Serializable{
 		return "id:"+getId() + ", name:" + getName();
 	}
 	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="animals",  orphanRemoval=true)
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="animals",  orphanRemoval=true, fetch=FetchType.EAGER)
 	public List<Food> getFoodList() {
 		return foodList;
 	}

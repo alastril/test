@@ -2,6 +2,7 @@ package my.myname.crud_spr_data.entity;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +10,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,6 +29,9 @@ import org.joda.time.DateTime;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
 @Component
 @Scope(scopeName="prototype")
 @Entity
@@ -35,15 +40,20 @@ import org.springframework.stereotype.Component;
 	@NamedQuery(name="selectAll", query="select distinct z from Zoo z left join fetch z.animalsList al" ),
 	@NamedQuery(name="selectById", query="select z from Zoo z left join fetch z.animalsList al where z.id = :id"),
 })
+
 public class Zoo implements Serializable{
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -4669208368736285110L;
+	@JacksonXmlProperty(localName="id", isAttribute=true)
 	private Long id;
+	@JacksonXmlProperty(localName="name")
 	private String name;
+	@JacksonXmlProperty(localName="dateCreation")
 	private DateTime dateCreation;
+	@JacksonXmlProperty(localName = "animalsList")
+    @JacksonXmlElementWrapper(useWrapping = false)
 	private Set<Animals> animalsList = new HashSet<Animals>();
 	
 	@Id
@@ -70,7 +80,7 @@ public class Zoo implements Serializable{
 	public void setDateCreation(DateTime dateCreation) {
 		this.dateCreation = dateCreation;
 	}
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
 	@JoinTable(name="zoo_animals", joinColumns=@JoinColumn(name="id_zoo"), inverseJoinColumns= @JoinColumn(name="id_animal"))
 	public Set<Animals> getAnimalsList() {
 		return animalsList;
@@ -84,7 +94,7 @@ public class Zoo implements Serializable{
 		Zoo zoo = new Zoo();
 		zoo.setDateCreation(this.getDateCreation());
 		zoo.setName(this.getName());
-		zoo.setAnimalsList(this.getAnimalsList());
+//		zoo.setAnimalsList(new HashSet<>(this.getAnimalsList()));
 		return zoo;
 	}
 	

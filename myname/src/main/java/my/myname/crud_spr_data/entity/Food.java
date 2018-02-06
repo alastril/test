@@ -15,14 +15,25 @@ import javax.persistence.Table;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 @Entity
 @Table(name="FOOD")
 @Component
 @Scope(scopeName="prototype")
+
 public class Food implements Serializable{
-	private static final long serialVersionUID = 3L;
+
+	private static final long serialVersionUID = 8196971690147183789L;
+	@JacksonXmlProperty(localName="id", isAttribute=true)
 	private Long id;
+	@JacksonXmlProperty(localName="name")
 	private String name;
+	@JacksonXmlProperty(localName="animals")
+	@JacksonXmlElementWrapper(useWrapping = false)
 	private Animals animals;
 	
 	@Id
@@ -42,7 +53,7 @@ public class Food implements Serializable{
 		this.name = name;
 	}
 
-	@ManyToOne(cascade=CascadeType.ALL, fetch= FetchType.LAZY, optional=true)
+	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER, optional=true)
 	@JoinColumn(name="ID_ANIMALS")
 	public Animals getAnimals() {
 		return animals;

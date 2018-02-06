@@ -1,26 +1,52 @@
-<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
          http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-         version="3.1">
+	version="3.1">
+
+	<!-- Ahtung!!! Annotations like @Transactional, not working in Dao-layers 
+		if we init txManager(he used in dao) in ContextLoaderListener but using them(Dao-layers) 
+		in Controllers witch init in DispatcherServlet(example: main_config.xml where 
+		txManager init in ContextLoaderListener, mvc-config.xml where controllers,viewers 
+		etc. init in DispatcherServlet), result such practice - error: "org.hibernate.HibernateException: 
+		Could not obtain transaction-synchronized Session for current thread". Fix 
+		this we have 2 ways: 1. Our config-files we use in one Context:
+		 DispatcherServlet or ContextLoaderListener   ??????  profit.
+		 2. If we use some servlet for example: HttpRequestHandlerServlet, 
+		 we must have ContextLoaderListener, DispatcherServlet not recognize it... 
+		 so what to do if we want use DispatcherServlet and ContextLoaderListener?
+		 Use all configs in ContextLoaderListener because its root WebApplicationContext 
+		 and he can share own data to other Context like DispatcherServlet(as result recognize mvc-annotations in ContextLoaderListener).  -->
 	<display-name>Spring НТТР Invoker Sample</display-name>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/classes/app-config.xml</param-value>
+		<param-value>/WEB-INF/classes/spring/rest-context.xml</param-value>
 	</context-param>
 	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener
-		</listener-class>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
+
 	<servlet>
-<!-- 	important! servlet name must be as bean name of HttpRequestHandlerServlet in spring config -->
+		<servlet-name>restful</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value></param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
+		<!-- important! servlet name must be as bean name of HttpRequestHandlerServlet 
+			in spring config -->
 		<servlet-name>foodExporter</servlet-name>
 		<servlet-class>
-			org.springframework.web.context.support.HttpRequestHandlerServlet
-		</servlet-class>
+			org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>foodExporter</servlet-name>
 		<url-pattern>/remoting/FoodService</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>restful</servlet-name>
+		<url-pattern>/restful/*</url-pattern>
 	</servlet-mapping>
 </web-app> 

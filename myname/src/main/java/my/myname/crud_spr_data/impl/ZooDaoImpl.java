@@ -21,7 +21,7 @@ import my.myname.jms.JmsProduser;
 @Repository("ZooDao")
 @Transactional(transactionManager ="transactionManagerSession")
 public class ZooDaoImpl implements ZooDao {
-
+ 
 	@Autowired
 	SessionFactory sessionFactory;
 //	@Autowired
@@ -42,7 +42,6 @@ public class ZooDaoImpl implements ZooDao {
 	
 	@Override
 	public Zoo save(Zoo zoo) {
-	
 		getSessionFactory().getCurrentSession().saveOrUpdate(zoo);
 		return zoo;
 	}
@@ -100,6 +99,8 @@ public class ZooDaoImpl implements ZooDao {
 	}
 
 	public void deleteZoo(Zoo zoo) {
+//		em.joinTransaction();
+//		em.remove(em.contains(zoo) ? zoo : em.merge(zoo));
 		getSessionFactory().getCurrentSession().delete(zoo);
 	}
 
