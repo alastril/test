@@ -116,6 +116,6 @@ public class Zoo implements Serializable{
 	
 	@Override
 	public String toString() {
-		return "id:"+getId() + ", name:" + getName() + ", dateCreat:" + getDateCreation();
+		return "id:"+getId() + ", name:" + getName() + ", dateCreat:" + getDateCreation() + "\n Animal:" + getAnimalsList().toString();
 	}
 }

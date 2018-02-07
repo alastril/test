@@ -17,21 +17,21 @@ xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.spr
          <import resource="../config_xml/app-config.xml" />
 	<mvc:annotation-driven>
       <mvc:message-converters>
-         <bean class="org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter">
-            <property name="objectMapper" ref="xmlMapper"/>
+         <bean class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+            <property name="marshaller" ref="jaxbMarshaller"/>
+            <property name="unmarshaller" ref="jaxbMarshaller"/>
          </bean>
       </mvc:message-converters>
    </mvc:annotation-driven>
-
-   <bean id="xmlMapper" parent="objectMapper">   
-      <property name="createXmlMapper" value="true"/>
-   </bean>
-   <bean id="objectMapper" class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
-      <property name="indentOutput" value="true"/>
+   <bean id="jaxbMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+      <property name="classesToBeBound" >
+      		<list>
+      			<value>my.myname.mvc.MarshUnmarsh</value>
+      			<value>my.myname.crud_spr_data.entity.Zoo</value>
+      			<value>my.myname.crud_spr_data.entity.Animals</value>
+      			<value>my.myname.crud_spr_data.entity.Food</value>
+      		</list>
+      </property>
    </bean>
 	<context:component-scan base-package="my.myname" />
-
-<!-- 	<bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller"> -->
-<!-- 		<property name="mappingLocation" value="classpath:META-INF/spring/oxm-mapping.xml" /> -->
-<!-- 	</bean> -->
 </beans>

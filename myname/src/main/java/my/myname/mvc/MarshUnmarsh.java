@@ -47,5 +47,8 @@ public class MarshUnmarsh implements Serializable{
 		this.zooList = zooList;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return getZooList().toString();
+	}
 }

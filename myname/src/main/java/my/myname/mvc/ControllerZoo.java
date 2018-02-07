@@ -14,12 +14,15 @@ import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.Version;
@@ -50,26 +53,22 @@ public class ControllerZoo {
 
 
 	@RequestMapping(value="/xmlzoo", method=RequestMethod.GET, produces=MediaType.APPLICATION_XML_VALUE)
-	@ResponseBody
-	public String getXmlZoo() throws Throwable{
-
-		JAXBContext jaxbContext = JAXBContext.newInstance(MarshUnmarsh.class);
-        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
- 
-	    String xml=null;
+	public @ResponseBody MarshUnmarsh getXmlZoo() throws Throwable{
 		try {
-	        StringWriter result = new StringWriter();
 	        rootDocument.setZooList(zooDao.getListZoo());
-	        jaxbMarshaller.marshal(rootDocument, result);
-	        // Printing XML
-	        xml = result.toString();
-	        log.debug(xml);
 		} catch (Exception e) {
-			log.debug(e.getMessage(),e);
+			log.error(e.getMessage(),e);
 		}
-		return xml;
+		return rootDocument;
 	}
 	
-	
+	@RequestMapping(value="/xmlzoo", method=RequestMethod.POST, produces=MediaType.APPLICATION_XML_VALUE)
+	@ResponseStatus(code=HttpStatus.CREATED)
+	public void setXmlZoo(@RequestBody MarshUnmarsh marshUnmarsh) throws Throwable{
+		try {
+			 marshUnmarsh.getZooList().stream().forEach(action -> {zooDao.save(action);});
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+		}
+	}
 }

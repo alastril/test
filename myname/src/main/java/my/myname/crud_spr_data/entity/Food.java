@@ -76,7 +76,7 @@ public class Food implements Serializable{
 	
 	@Override
 	public String toString() {
-		return "id:"+getId() + ", name:" + getName();
+		return "id:"+getId() + ", name:" + getName() + "\n Animal:" + getAnimals().toString();
 	}
 
 }

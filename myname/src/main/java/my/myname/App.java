@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.validation.Validator;
 
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.MutablePropertyValues;
@@ -26,6 +27,7 @@ import my.myname.crud_spr_data.interfaces.AnimalsService;
 import my.myname.crud_spr_data.interfaces.FoodService;
 import my.myname.crud_spr_data.interfaces.ZooDao;
 import my.myname.jms.JmsProduser;
+import my.myname.mvc.ControllerZoo;
 import my.myname.shedulers.ShedulerAndAsync;
 import my.myname.shedulers.TaskToExecute;
 import my.myname.validation.converters.AnotherTypeForConvert;
@@ -37,6 +39,7 @@ import my.myname.validation.validators.class_test.ClassforValidationTests;
  *
  */
 public class App {
+	private static final Logger log = Logger.getLogger(App.class);
 	public static void main(String[] args) throws Throwable {
 		ApplicationContext ap = new GenericXmlApplicationContext("classpath:config_xml/app-config.xml");
 
@@ -44,7 +47,7 @@ public class App {
 		FoodService fs = (FoodService) ap.getBean("FoodService");
 		
 		  
-//		 ZooSaveCall(ap);
+		 ZooSaveCall(ap);
 		// FoodSaveCall(ap); //need for httpInvoker
 		// formatersCall(ap);
 //		 JTACall(ap);
@@ -96,7 +99,7 @@ public class App {
 		//animalKot.getZooList().add(zoo);
 
 		Zoo zooClone = (Zoo) zoo.clone();
-		
+
 		zd.save(zoo);
 		zd.save(zooClone);
 
