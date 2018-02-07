@@ -12,30 +12,31 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import my.myname.mvc.adapters.IntegerAdapter;
+
 @Entity
 @Table(name="FOOD")
 @Component
 @Scope(scopeName="prototype")
-
+@XmlRootElement(name="Food")@XmlSeeAlso({Animals.class})//jaxB
 public class Food implements Serializable{
 
 	private static final long serialVersionUID = 8196971690147183789L;
-	@JacksonXmlProperty(localName="id", isAttribute=true)
 	private Long id;
-	@JacksonXmlProperty(localName="name")
 	private String name;
-	@JacksonXmlProperty(localName="animals")
-	@JacksonXmlElementWrapper(useWrapping = false)
 	private Animals animals;
 	
+	@XmlID @XmlJavaTypeAdapter(value = IntegerAdapter.class, type = String.class)//jaxB
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="ID")
@@ -45,6 +46,8 @@ public class Food implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	@XmlElement//jaxB
 	@Column(name="NAME")
 	public String getName() {
 		return name;
@@ -53,6 +56,8 @@ public class Food implements Serializable{
 		this.name = name;
 	}
 
+	
+	@XmlIDREF//jaxB
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER, optional=true)
 	@JoinColumn(name="ID_ANIMALS")
 	public Animals getAnimals() {

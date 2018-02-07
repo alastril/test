@@ -43,21 +43,21 @@ public class App {
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
 		FoodService fs = (FoodService) ap.getBean("FoodService");
 		
-		
+		  
 //		 ZooSaveCall(ap);
 		// FoodSaveCall(ap); //need for httpInvoker
 		// formatersCall(ap);
-		 JTACall(ap);
+//		 JTACall(ap);
 		// converterCall(ap);
 		// AopCall(ap);
 		//validatorsCall(ap);
 		//asyncCall(ap);
 		//executeTask(ap);
 //		jmsCall(ap);
-		// httpInvoker(ap);//need deploy application to servlet container(tomcat)
-//		 while(true) {
-//				
-//			}
+		 httpInvoker(ap);//need deploy application to servlet container(tomcat)
+		 while(true) {
+				
+			}
 		
 	}
 
@@ -89,14 +89,14 @@ public class App {
 		animalKot.setName("kot");
 		animalKot.addFood(food);
 		animalKot.addFood(food2);
-
+ 
 		zoo.getAnimalsList().add(animalSobaka);
 		zoo.getAnimalsList().add(animalKot);
 		//animalSobaka.getZooList().add(zoo);
 		//animalKot.getZooList().add(zoo);
 
 		Zoo zooClone = (Zoo) zoo.clone();
-
+		
 		zd.save(zoo);
 		zd.save(zooClone);
 
@@ -108,9 +108,8 @@ public class App {
 				System.out.println(animals.toString());
 			}
 		}
-//		 zooClone = (Zoo) zoo.clone();
-		//as.deleteAnimals(animalSobaka);as.deleteAnimals(animalKot);
-		zd.deleteZoo(zoo);
+
+		//zd.deleteZoo(zoo);
 		
 	}
 

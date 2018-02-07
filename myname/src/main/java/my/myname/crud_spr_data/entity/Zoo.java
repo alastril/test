@@ -22,6 +22,13 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Type;
@@ -32,6 +39,9 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+import my.myname.mvc.adapters.DateTimeAdapter;
+import my.myname.mvc.adapters.IntegerAdapter;
+
 @Component
 @Scope(scopeName="prototype")
 @Entity
@@ -40,22 +50,24 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 	@NamedQuery(name="selectAll", query="select distinct z from Zoo z left join fetch z.animalsList al" ),
 	@NamedQuery(name="selectById", query="select z from Zoo z left join fetch z.animalsList al where z.id = :id"),
 })
-
+@XmlRootElement(name="Zoo") @XmlSeeAlso({Animals.class})//jaxB
 public class Zoo implements Serializable{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4669208368736285110L;
-	@JacksonXmlProperty(localName="id", isAttribute=true)
+	
 	private Long id;
-	@JacksonXmlProperty(localName="name")
+	
 	private String name;
-	@JacksonXmlProperty(localName="dateCreation")
+	
 	private DateTime dateCreation;
-	@JacksonXmlProperty(localName = "animalsList")
-    @JacksonXmlElementWrapper(useWrapping = false)
+
 	private Set<Animals> animalsList = new HashSet<Animals>();
 	
+	
+
+	@XmlID @XmlJavaTypeAdapter(value = IntegerAdapter.class, type = String.class)//jaxB
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	@Column(name="ID")
@@ -65,6 +77,7 @@ public class Zoo implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
+	@XmlElement//jaxB
 	@Column(name="NAME")
 	public String getName() {
 		return name;
@@ -72,6 +85,7 @@ public class Zoo implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
+	@XmlElement @XmlJavaTypeAdapter(value=DateTimeAdapter.class, type=String.class)//jaxB
 	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	@Column(name="DATE")
 	public DateTime getDateCreation() {
@@ -80,6 +94,8 @@ public class Zoo implements Serializable{
 	public void setDateCreation(DateTime dateCreation) {
 		this.dateCreation = dateCreation;
 	}
+	
+	@XmlElement(name="animal") @XmlElementWrapper(name="animalsList")//jaxB
 	@ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
 	@JoinTable(name="zoo_animals", joinColumns=@JoinColumn(name="id_zoo"), inverseJoinColumns= @JoinColumn(name="id_animal"))
 	public Set<Animals> getAnimalsList() {

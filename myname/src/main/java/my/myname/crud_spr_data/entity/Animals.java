@@ -18,6 +18,14 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -25,29 +33,24 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.sun.xml.bind.CycleRecoverable;
+
+import my.myname.mvc.adapters.IntegerAdapter;
+import net.bytebuddy.agent.builder.AgentBuilder.CircularityLock;
 @Entity
 @Table(name="ANIMALS")
 @Component
 @Scope(scopeName="prototype")
-
+@XmlRootElement(name="Animals") @XmlSeeAlso({Zoo.class,Food.class})//jaxB
 public class Animals implements Serializable{
 	
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1716262289447197232L;
-	@JacksonXmlProperty(localName="id", isAttribute=true)
 	private Long id;
-	@JacksonXmlProperty(localName="name")
 	private String name;
-	@JacksonXmlProperty(localName="zooList")
-	@JacksonXmlElementWrapper(useWrapping = false)
 	private Set<Zoo> zooList = new HashSet<Zoo>();
-	@JacksonXmlProperty(localName="foodList")
-	@JacksonXmlElementWrapper(useWrapping = false)
 	private List<Food> foodList = new ArrayList<Food>();
 	
+	@XmlID @XmlJavaTypeAdapter(value = IntegerAdapter.class, type = String.class)//jaxB
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="ID")
@@ -57,6 +60,8 @@ public class Animals implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	@XmlElement//jaxB
 	@Column(name="NAME")
 	public String getName() {
 		return name;
@@ -64,6 +69,9 @@ public class Animals implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	
+	@XmlIDREF @XmlElement(name="Zoo") @XmlElementWrapper(name="zooList") //jaxB
 	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@JoinTable(
 			name="zoo_animals",
@@ -90,6 +98,7 @@ public class Animals implements Serializable{
 		return "id:"+getId() + ", name:" + getName();
 	}
 	
+	@XmlElement(name="Food") @XmlElementWrapper(name="foodList") //jaxB
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="animals",  orphanRemoval=true, fetch=FetchType.EAGER)
 	public List<Food> getFoodList() {
 		return foodList;
@@ -106,4 +115,5 @@ public class Animals implements Serializable{
 	public void removeFood(Food food){
 		getFoodList().remove(food);
 	}
+
 }
