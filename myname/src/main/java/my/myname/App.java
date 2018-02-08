@@ -18,6 +18,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.client.RestTemplate;
 
 import my.myname.aop.PointCut;
 import my.myname.crud_spr_data.entity.Animals;
@@ -27,7 +28,7 @@ import my.myname.crud_spr_data.interfaces.AnimalsService;
 import my.myname.crud_spr_data.interfaces.FoodService;
 import my.myname.crud_spr_data.interfaces.ZooDao;
 import my.myname.jms.JmsProduser;
-import my.myname.mvc.ControllerZoo;
+import my.myname.mvc.MarshUnmarsh;
 import my.myname.shedulers.ShedulerAndAsync;
 import my.myname.shedulers.TaskToExecute;
 import my.myname.validation.converters.AnotherTypeForConvert;
@@ -41,13 +42,13 @@ import my.myname.validation.validators.class_test.ClassforValidationTests;
 public class App {
 	private static final Logger log = Logger.getLogger(App.class);
 	public static void main(String[] args) throws Throwable {
-		ApplicationContext ap = new GenericXmlApplicationContext("classpath:config_xml/app-config.xml");
+		ApplicationContext ap = new GenericXmlApplicationContext("classpath:spring/rest-context.xml");
 
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
 		FoodService fs = (FoodService) ap.getBean("FoodService");
 		
-		  
-		 ZooSaveCall(ap);
+//		  callRestRequest(ap);
+//		 ZooSaveCall(ap);
 		// FoodSaveCall(ap); //need for httpInvoker
 		// formatersCall(ap);
 //		 JTACall(ap);
@@ -57,9 +58,9 @@ public class App {
 		//asyncCall(ap);
 		//executeTask(ap);
 //		jmsCall(ap);
-		 httpInvoker(ap);//need deploy application to servlet container(tomcat)
+//		 httpInvoker(ap);//need deploy application to servlet container(tomcat)
 		 while(true) {
-				
+		   
 			}
 		
 	}
@@ -294,4 +295,20 @@ public class App {
 		jp.sendToQueue("HElllo!!!!1111");
 		jp.sendToTopic("HElllo!!!!1111");
 	}
+	
+	public static void callRestRequest(ApplicationContext ap) {
+		RestTemplate rt = ap.getBean(RestTemplate.class);
+		System.out.println("callRestTemplate");
+		
+		//get all zoo
+		rt.getForObject("http://localhost:8080/myname/restful/zoo/xmlzoo", MarshUnmarsh.class).getZooList().stream().forEach(action->{System.out.println(action.toString());});;
+		
+		//add new zoo
+		MarshUnmarsh m = new MarshUnmarsh();
+		Zoo z = new Zoo();
+		z.setName("ZOOOOO");
+		z.setDateCreation(new DateTime());
+		m.getZooList().add(z);
+		rt.postForObject("http://localhost:8080/myname/restful/zoo/xmlzoo", m, Void.class);
+	} 
 }

@@ -15,17 +15,19 @@ xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.spr
          http://www.springframework.org/schema/mvc
          http://www.springframework.org/schema/mvc/spring-mvc.xsd">
          <import resource="../config_xml/app-config.xml" />
-	<mvc:annotation-driven>
-      <mvc:message-converters>
-         <bean class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+    <bean id="marshallerConverter" class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
             <property name="marshaller" ref="jaxbMarshaller"/>
             <property name="unmarshaller" ref="jaxbMarshaller"/>
+    </bean>
+	<mvc:annotation-driven>
+      <mvc:message-converters>
+         <bean parent="marshallerConverter" >
          </bean>
       </mvc:message-converters>
    </mvc:annotation-driven>
    <bean id="jaxbMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
       <property name="classesToBeBound" >
-      		<list>
+      		<list >
       			<value>my.myname.mvc.MarshUnmarsh</value>
       			<value>my.myname.crud_spr_data.entity.Zoo</value>
       			<value>my.myname.crud_spr_data.entity.Animals</value>
@@ -34,4 +36,12 @@ xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.spr
       </property>
    </bean>
 	<context:component-scan base-package="my.myname" />
+	 
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+	<property name="messageConverters">
+			<list>
+				<ref bean="marshallerConverter" />
+			</list>
+	</property>
+	</bean>
 </beans>

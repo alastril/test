@@ -2,6 +2,7 @@ package my.myname.aop;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
@@ -102,6 +103,7 @@ public class AspectTest {
 	public void callForBidirectionalLinksAfterUnmarshaling(JoinPoint joinPoint) throws Throwable {
 		log.info(joinPoint.getSignature().getDeclaringType());
 		log.info("Begin do links for food to their parents");
+		AtomicInteger count = new AtomicInteger(0);
 		Arrays.asList(joinPoint.getArgs()).stream().forEach(obj -> {
 			if (obj.getClass().getSimpleName().equals("MarshUnmarsh")) {
 				MarshUnmarsh marshUnmarsh = (MarshUnmarsh) obj;
@@ -109,11 +111,13 @@ public class AspectTest {
 					zoo.getAnimalsList().stream().forEach(animls -> {
 						animls.getFoodList().stream().forEach(food -> {
 							food.setAnimals(animls);
+							count.incrementAndGet();
 						});
 					});
 				});
 			}
 		});
+		log.info("Count parent links: "+count.get());
 	}
 
 }
