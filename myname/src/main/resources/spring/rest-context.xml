@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
-xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="
 	         http://www.springframework.org/schema/util
 		 http://www.springframework.org/schema/util/spring-util.xsd
@@ -14,34 +14,57 @@ xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.spr
          http://www.springframework.org/schema/context/spring-context-3.0.xsd
          http://www.springframework.org/schema/mvc
          http://www.springframework.org/schema/mvc/spring-mvc.xsd">
-         <import resource="../config_xml/app-config.xml" />
-    <bean id="marshallerConverter" class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
-            <property name="marshaller" ref="jaxbMarshaller"/>
-            <property name="unmarshaller" ref="jaxbMarshaller"/>
-    </bean>
+	<import resource="../config_xml/app-config.xml" />
+
 	<mvc:annotation-driven>
-      <mvc:message-converters>
-         <bean parent="marshallerConverter" >
-         </bean>
-      </mvc:message-converters>
-   </mvc:annotation-driven>
-   <bean id="jaxbMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-      <property name="classesToBeBound" >
-      		<list >
-      			<value>my.myname.mvc.MarshUnmarsh</value>
-      			<value>my.myname.crud_spr_data.entity.Zoo</value>
-      			<value>my.myname.crud_spr_data.entity.Animals</value>
-      			<value>my.myname.crud_spr_data.entity.Food</value>
-      		</list>
-      </property>
-   </bean>
+		<mvc:message-converters >
+
+			<bean parent="marshallerConverter">
+			</bean>
+
+			<bean parent="jsonConverter">
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<bean id="marshallerConverter"
+		class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+		<property name="marshaller" ref="jaxbMarshaller" />
+		<property name="unmarshaller" ref="jaxbMarshaller" />
+	</bean>
+	<bean id="jaxbMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+		<property name="classesToBeBound">
+			<list>
+				<value>my.myname.mvc.MarshUnmarsh</value>
+				<value>my.myname.crud_spr_data.entity.Zoo</value>
+				<value>my.myname.crud_spr_data.entity.Animals</value>
+				<value>my.myname.crud_spr_data.entity.Food</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="jacksonObjectMapper"
+		class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+		<property name="featuresToDisable">
+			<array>
+				<util:constant
+					static-field="com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS" />
+			</array>
+		</property>
+	</bean>
+	<bean id="jsonConverter"
+		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<property name="objectMapper" ref="jacksonObjectMapper" />
+	</bean>
+	
+	
 	<context:component-scan base-package="my.myname" />
-	 
+
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
-	<property name="messageConverters">
+		<property name="messageConverters">
 			<list>
 				<ref bean="marshallerConverter" />
+				<ref bean="jsonConverter" />
 			</list>
-	</property>
+		</property>
 	</bean>
 </beans>

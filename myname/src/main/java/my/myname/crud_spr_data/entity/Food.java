@@ -22,6 +22,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import my.myname.mvc.adapters.IntegerAdapter;
 
 @Entity
@@ -29,6 +32,9 @@ import my.myname.mvc.adapters.IntegerAdapter;
 @Component
 @Scope(scopeName="prototype")
 @XmlRootElement(name="Food")@XmlSeeAlso({Animals.class})//jaxB
+@JsonIdentityInfo(
+		  generator = ObjectIdGenerators.PropertyGenerator.class, 
+		  property = "id")
 public class Food implements Serializable{
 
 	private static final long serialVersionUID = 8196971690147183789L;
@@ -57,7 +63,7 @@ public class Food implements Serializable{
 	}
 
 	
-	@XmlIDREF//jaxB
+	@XmlIDREF //jaxB
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER, optional=true)
 	@JoinColumn(name="ID_ANIMALS")
 	public Animals getAnimals() {

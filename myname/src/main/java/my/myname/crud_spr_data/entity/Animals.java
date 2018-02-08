@@ -18,7 +18,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlID;
@@ -30,18 +29,17 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import com.sun.xml.bind.CycleRecoverable;
-
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import my.myname.mvc.adapters.IntegerAdapter;
-import net.bytebuddy.agent.builder.AgentBuilder.CircularityLock;
 @Entity
 @Table(name="ANIMALS")
 @Component
 @Scope(scopeName="prototype")
 @XmlRootElement(name="Animals") @XmlSeeAlso({Zoo.class,Food.class})//jaxB
+@JsonIdentityInfo(
+		  generator = ObjectIdGenerators.PropertyGenerator.class, 
+		  property = "id")
 public class Animals implements Serializable{
 	
 	private static final long serialVersionUID = 1716262289447197232L;

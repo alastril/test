@@ -1,5 +1,6 @@
 package my.myname;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -14,6 +15,11 @@ import org.springframework.beans.MutablePropertyValues;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.ValidationUtils;
@@ -46,8 +52,8 @@ public class App {
 
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
 		FoodService fs = (FoodService) ap.getBean("FoodService");
-		
-//		  callRestRequest(ap);
+		 
+		  callRestRequest(ap);
 //		 ZooSaveCall(ap);
 		// FoodSaveCall(ap); //need for httpInvoker
 		// formatersCall(ap);
@@ -299,10 +305,10 @@ public class App {
 	public static void callRestRequest(ApplicationContext ap) {
 		RestTemplate rt = ap.getBean(RestTemplate.class);
 		System.out.println("callRestTemplate");
-		
+ 
 		//get all zoo
-		rt.getForObject("http://localhost:8080/myname/restful/zoo/xmlzoo", MarshUnmarsh.class).getZooList().stream().forEach(action->{System.out.println(action.toString());});;
-		
+//		rt.getForObject("http://localhost:8080/myname/restful/zoo/xmlzoo", MarshUnmarsh.class).getZooList().stream().forEach(action->{System.out.println(action.toString());});;
+		 
 		//add new zoo
 		MarshUnmarsh m = new MarshUnmarsh();
 		Zoo z = new Zoo();
@@ -310,5 +316,11 @@ public class App {
 		z.setDateCreation(new DateTime());
 		m.getZooList().add(z);
 		rt.postForObject("http://localhost:8080/myname/restful/zoo/xmlzoo", m, Void.class);
+//		m = new MarshUnmarsh();
+//		z = new Zoo();
+//		z.setName("ZOOOOO");
+//		z.setDateCreation(new DateTime());
+//		m.getZooList().add(z);
+//		rt.postForObject("http://localhost:8080/myname/restful/zoo/jsonzoo", m, Void.class);
 	} 
 }
