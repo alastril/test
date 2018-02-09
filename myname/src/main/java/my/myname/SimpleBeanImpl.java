@@ -7,6 +7,12 @@ import org.joda.time.DateTime;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+//import com.fasterxml.jackson.datatype.joda.deser.DateTimeDeserializer;
+//import com.fasterxml.jackson.datatype.joda.ser.DateTimeSerializer;
+
 import my.myname.anotations.AnotationFormater;
 import my.myname.aop.SimpleBean;
 
@@ -18,6 +24,8 @@ public class SimpleBeanImpl implements SimpleBean, Serializable{
 	private long id;
 	@AnotationFormater(oldChar='!', newChar='.')
 	private String name;
+
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private DateTime dt;
 	
 	public SimpleBeanImpl() {

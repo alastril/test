@@ -316,11 +316,11 @@ public class App {
 		z.setDateCreation(new DateTime());
 		m.getZooList().add(z);
 		rt.postForObject("http://localhost:8080/myname/restful/zoo/xmlzoo", m, Void.class);
-//		m = new MarshUnmarsh();
-//		z = new Zoo();
-//		z.setName("ZOOOOO");
-//		z.setDateCreation(new DateTime());
-//		m.getZooList().add(z);
-//		rt.postForObject("http://localhost:8080/myname/restful/zoo/jsonzoo", m, Void.class);
+		m = new MarshUnmarsh();
+		z = new Zoo();
+		z.setName("ZOOOOO");
+		z.setDateCreation(new DateTime());
+		m.getZooList().add(z);
+		rt.postForObject("http://localhost:8080/myname/restful/zoo/jsonzoo", m, Void.class);
 	} 
 }

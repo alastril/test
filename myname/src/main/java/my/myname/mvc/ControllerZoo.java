@@ -86,6 +86,17 @@ public class ControllerZoo {
 			log.error(e.getMessage(),e);
 		}
 	}
+	
+	@RequestMapping(value="/test", method=RequestMethod.POST, consumes =  MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code=HttpStatus.CREATED)
+	public void setJson(@RequestBody SimpleBeanImpl marshUnmarsh) throws Throwable{
+		try {    
+			System.out.println(marshUnmarsh);
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+		}
+	}
+	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> handleIllegalArgumentException(Exception ex) {
 	    HttpHeaders headers = new HttpHeaders();

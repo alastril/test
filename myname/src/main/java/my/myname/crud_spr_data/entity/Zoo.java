@@ -30,6 +30,7 @@ import org.joda.time.DateTime;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -57,7 +58,7 @@ public class Zoo implements Serializable{
 	private Long id;
 
 	private String name;
-	
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private DateTime dateCreation;
 	private Set<Animals> animalsList = new HashSet<Animals>();
 	
