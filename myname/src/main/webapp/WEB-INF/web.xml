@@ -9,13 +9,13 @@
 		txManager init in ContextLoaderListener, mvc-config.xml where controllers,viewers 
 		etc. init in DispatcherServlet), result such practice - error: "org.hibernate.HibernateException: 
 		Could not obtain transaction-synchronized Session for current thread". Fix 
-		this we have 2 ways: 1. Our config-files we use in one Context:
-		 DispatcherServlet or ContextLoaderListener   ??????  profit.
-		 2. If we use some servlet for example: HttpRequestHandlerServlet, 
-		 we must have ContextLoaderListener, DispatcherServlet not recognize it... 
-		 so what to do if we want use DispatcherServlet and ContextLoaderListener?
-		 Use all configs in ContextLoaderListener because its root WebApplicationContext 
-		 and he can share own data to other Context like DispatcherServlet(as result recognize mvc-annotations in ContextLoaderListener).  -->
+		this we have 2 ways: 1. Our config-files we use in one Context: DispatcherServlet 
+		or ContextLoaderListener ?????? profit. 2. If we use some servlet for example: 
+		HttpRequestHandlerServlet, we must have ContextLoaderListener, DispatcherServlet 
+		not recognize it... so what to do if we want use DispatcherServlet and ContextLoaderListener? 
+		Use all configs in ContextLoaderListener because its root WebApplicationContext 
+		and he can share own data to other Context like DispatcherServlet(as result 
+		recognize mvc-annotations in ContextLoaderListener). -->
 	<display-name>Spring НТТР Invoker Sample</display-name>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
@@ -39,8 +39,19 @@
 			in spring config -->
 		<servlet-name>foodExporter</servlet-name>
 		<servlet-class>
-			org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
+			org.springframework.web.context.support.HttpRequestHandlerServlet
+		</servlet-class>
 	</servlet>
+<!-- 	<filter> -->
+<!-- 		<filter-name>springSecurityFilterChain</filter-name> -->
+<!-- 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class> -->
+<!-- 	</filter> -->
+
+<!-- 	<filter-mapping> -->
+<!-- 		<filter-name>springSecurityFilterChain</filter-name> -->
+<!-- 		<url-pattern>/restful/*</url-pattern> -->
+<!-- 	</filter-mapping> -->
+
 	<servlet-mapping>
 		<servlet-name>foodExporter</servlet-name>
 		<url-pattern>/remoting/FoodService</url-pattern>
