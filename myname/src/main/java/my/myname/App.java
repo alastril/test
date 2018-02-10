@@ -15,11 +15,6 @@ import org.springframework.beans.MutablePropertyValues;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.ValidationUtils;
@@ -35,6 +30,10 @@ import my.myname.crud_spr_data.interfaces.FoodService;
 import my.myname.crud_spr_data.interfaces.ZooDao;
 import my.myname.jms.JmsProduser;
 import my.myname.mvc.MarshUnmarsh;
+import my.myname.mvc.security.dao.UserDao;
+import my.myname.mvc.security.dao.UserRoleDao;
+import my.myname.mvc.security.entity.User;
+import my.myname.mvc.security.entity.UserRole;
 import my.myname.shedulers.ShedulerAndAsync;
 import my.myname.shedulers.TaskToExecute;
 import my.myname.validation.converters.AnotherTypeForConvert;
@@ -52,8 +51,10 @@ public class App {
 
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
 		FoodService fs = (FoodService) ap.getBean("FoodService");
-		 
-		  callRestRequest(ap);
+		UserDao udi = (UserDao) ap.getBean("UserRepository");
+		UserRoleDao urdi = (UserRoleDao) ap.getBean("UserRoleRepository"); 
+	   
+//		  callRestRequest(ap);
 //		 ZooSaveCall(ap);
 		// FoodSaveCall(ap); //need for httpInvoker
 		// formatersCall(ap);
@@ -65,9 +66,9 @@ public class App {
 		//executeTask(ap);
 //		jmsCall(ap);
 //		 httpInvoker(ap);//need deploy application to servlet container(tomcat)
-		 while(true) {
-		   
-			}
+//		 while(true) {
+//		   
+//			}
 		
 	}
 

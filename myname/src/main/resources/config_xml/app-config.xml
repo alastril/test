@@ -28,8 +28,9 @@
 	<tx:annotation-driven />
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 	<context:component-scan base-package="my.myname" />
-	<context:property-placeholder location="WEB-INF/classes/properties/app.properties"/>
-<!-- WEB-INF/classes/ -->
+	<context:property-placeholder
+		location="WEB-INF/classes/properties/app.properties" />
+	<!-- WEB-INF/classes/ -->
 
 
 	<jpa:repositories base-package="my.myname"
@@ -40,17 +41,21 @@
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
 		p:driverClassName="com.mysql.jdbc.Driver" p:url="jdbc:mysql://localhost:3306/my_hibernate"
-		p:username="root" p:password="admin" >
-		</bean>
+		p:username="root" p:password="admin">
+	</bean>
 	<util:properties id="dataSourceProperties">
 		<prop key="defaultAutoCommit">false</prop>
 
 	</util:properties>
-	<bean depends-on="sessionFactory" id="transactionManagerSession"
+	<bean id="transactionManagerSession" depends-on="sessionFactory"
 		class="org.springframework.orm.hibernate5.HibernateTransactionManager"
 		p:sessionFactory-ref="sessionFactory">
 		<qualifier value="transactionManagerSession" />
 	</bean>
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
+		p:dataSource-ref="dataSource" p:packagesToScan="my.myname"
+		p:hibernateProperties-ref="hibernateProperties" />
 
 	<bean id="transactionManagerJPA" class="org.springframework.orm.jpa.JpaTransactionManager"
 		p:entityManagerFactory-ref="entityManagerFactory">
@@ -66,10 +71,7 @@
 		p:dataSource-ref="dataSource" p:jpaVendorAdapter-ref="hibernateJpaVendorAdapter"
 		p:packagesToScan="my.myname" p:jpaProperties-ref="hibernateProperties" />
 
-	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
-		p:dataSource-ref="dataSource" p:packagesToScan="my.myname.crud_spr_data"
-		p:hibernateProperties-ref="hibernateProperties" />
+
 
 	<util:properties id="hibernateProperties">
 		<prop key="hibernate.dialect">org.hibernate.dialect.MySQL57Dialect</prop>
