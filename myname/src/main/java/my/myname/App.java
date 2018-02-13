@@ -15,6 +15,7 @@ import org.springframework.beans.MutablePropertyValues;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -46,21 +47,26 @@ import my.myname.validation.validators.class_test.ClassforValidationTests;
  *
  */
 public class App {
-	private static final Logger log = Logger.getLogger(App.class);
+	private static final Logger LOG = Logger.getLogger(App.class);
 	public static void main(String[] args) throws Throwable {
-		ApplicationContext ap = new GenericXmlApplicationContext("classpath:spring/rest-context.xml");
-
+		 System.setProperty("spring.profiles.active", "test1");
+		 GenericXmlApplicationContext ap = new GenericXmlApplicationContext("classpath:spring/rest-context.xml");
+//		 ConfigurableEnvironment env = ap.getEnvironment();
+//		    env.setActiveProfiles("test1");
+//		
+//		ap.load("classpath:spring/rest-context.xml");
+//		ap.refresh(); 
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
 		FoodService fs = (FoodService) ap.getBean("FoodService");
 		 
-		  callRestRequest(ap);
+//		  callRestRequest(ap);
 //		 ZooSaveCall(ap);
 		// FoodSaveCall(ap); //need for httpInvoker
-		// formatersCall(ap);
+//		 formatersCall(ap);
 //		 JTACall(ap);
 		// converterCall(ap);
 		// AopCall(ap);
-		//validatorsCall(ap);
+		validatorsCall(ap);
 		//asyncCall(ap);
 		//executeTask(ap);
 //		jmsCall(ap);
@@ -212,11 +218,11 @@ public class App {
 		System.out.println(smpl);
 
 		// Formater
-		ConversionService conversionService = ap.getBean(ConversionService.class);
+		ConversionService conversionService = (ConversionService)ap.getBean("conversionService");
 		System.out.println(conversionService.convert(smpl, String.class));// print
 		smpl = conversionService.convert("14-05-2036", SimpleBeanImpl.class); // parse
 
-		conversionService.convert("14-05-2036", DateTime.class);
+		conversionService.convert("10-05-1036", DateTime.class);
 
 		// TestAnotationFormatter
 		DataBinder dataBinder = new DataBinder(smpl);
@@ -243,7 +249,7 @@ public class App {
 		
 		// JSR realization and //constraint realization
 		classforValidationTests.setName("Myname!!");
-		Validator validatorJsr =  ap.getBean(LocalValidatorFactoryBean.class);
+		Validator validatorJsr =  (LocalValidatorFactoryBean)ap.getBean("validatorJSR_303");
 		validatorJsr.validate(classforValidationTests);
 
 		
