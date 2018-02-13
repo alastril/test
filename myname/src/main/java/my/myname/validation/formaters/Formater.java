@@ -10,7 +10,7 @@ import my.myname.SimpleBeanImpl;
 
 /**
  * The Class Formater.
- * Convert from String Date(dd-yyyy-MM) to {@link SimpleBeanImpl}
+ * Convert from String-Date(dd-yyyy-MM) to {@link SimpleBeanImpl}
  */
 public class Formater implements Formatter<SimpleBeanImpl>{
 	

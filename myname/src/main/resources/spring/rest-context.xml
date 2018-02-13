@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:p="http://www.springframework.org/schema/p" xmlns:sec="http://www.springframework.org/schema/security"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:sec="http://www.springframework.org/schema/security"
 	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="
 	     http://www.springframework.org/schema/util
@@ -16,17 +16,17 @@
          http://www.springframework.org/schema/security/spring-security.xsd">
 	<import resource="../config_xml/app-config.xml" />
 
+<!-- ENABLE @CONTROLERS -->
 	<mvc:annotation-driven>
-		<mvc:message-converters >
-
+		<mvc:message-converters>
 			<bean parent="marshallerConverter">
 			</bean>
-
 			<bean parent="jsonConverter">
 			</bean>
 		</mvc:message-converters>
 	</mvc:annotation-driven>
-
+	
+<!-- XML CONVERTERS(JAXB) -->
 	<bean id="marshallerConverter"
 		class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
 		<property name="marshaller" ref="jaxbMarshaller" />
@@ -42,6 +42,7 @@
 			</list>
 		</property>
 	</bean>
+<!-- 	JSON CONVERTERS -->
 	<bean id="jacksonObjectMapper"
 		class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
 		<property name="featuresToDisable">
@@ -56,11 +57,27 @@
 		<property name="objectMapper" ref="jacksonObjectMapper" />
 	</bean>
 	
-<!-- 	<sec:http auto-config='true'> -->
-<!--     <sec:intercept-url pattern="/**" access="ROLE_USER" /> -->
-<!-- </sec:http> -->
+<!-- Spring Security -->
+	<sec:http auto-config='true' create-session="stateless">
+		<sec:intercept-url pattern="/restful/zoo/xmlzoo"
+			method="POST" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')" />
+		<sec:intercept-url pattern="/restful/zoo/jsonzoo"
+			method="POST" access="hasRole('ROLE_ADMIN')" />
+		<sec:intercept-url pattern="/**" access="isAuthenticated()" />
+		<sec:csrf disabled="true" /> <!-- for postman -->
+		<sec:remember-me use-secure-cookie="false" />
+	</sec:http>
+	<sec:authentication-manager>
+		<sec:authentication-provider
+			user-service-ref="userSecurityService">
+			<sec:password-encoder ref="encoder" />
+		</sec:authentication-provider>
+	</sec:authentication-manager>
+	<bean id="encoder"
+		class="org.springframework.security.crypto.password.NoOpPasswordEncoder" />
 	<context:component-scan base-package="my.myname" />
 
+<!-- Rest REquests from Programm -->
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
 		<property name="messageConverters">
 			<list>

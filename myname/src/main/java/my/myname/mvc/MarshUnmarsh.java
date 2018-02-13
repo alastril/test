@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import my.myname.crud_spr_data.entity.Zoo;
@@ -19,6 +20,7 @@ import my.myname.crud_spr_data.entity.Zoo;
  */
 @XmlRootElement(name="Document")
 @Component
+@Scope(scopeName="prototype")
 public class MarshUnmarsh implements Serializable{
 
 	/** The Constant serialVersionUID. */

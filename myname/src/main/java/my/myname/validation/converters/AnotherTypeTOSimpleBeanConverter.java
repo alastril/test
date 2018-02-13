@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import my.myname.SimpleBeanImpl;
 
 @Component
-public class SimpleBeanTOAnotherTypeConverter implements Converter<AnotherTypeForConvert, SimpleBeanImpl>{
+public class AnotherTypeTOSimpleBeanConverter implements Converter<AnotherTypeForConvert, SimpleBeanImpl>{
 	
 	@Autowired
 	@Qualifier("simpleBeanImpl")
