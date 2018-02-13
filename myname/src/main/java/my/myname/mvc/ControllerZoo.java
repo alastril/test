@@ -79,12 +79,13 @@ public class ControllerZoo {
 	 
 	@RequestMapping(value="/jsonzoo", method=RequestMethod.POST, consumes =  MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code=HttpStatus.CREATED)
-	public void setJsonZoo(@RequestBody MarshUnmarsh marshUnmarsh) throws Throwable{
+	public @ResponseBody MarshUnmarsh setJsonZoo(@RequestBody MarshUnmarsh marshUnmarsh) throws Throwable{
 		try {  
 			 marshUnmarsh.getZooList().stream().forEach(action -> {zooDao.save(action);});
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
 		}
+		return marshUnmarsh;
 	}
 	
 	@RequestMapping(value="/test", method=RequestMethod.POST, consumes =  MediaType.APPLICATION_JSON_VALUE)

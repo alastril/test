@@ -22,8 +22,8 @@ import my.myname.crud_spr_data.interfaces.ZooDao;
 import my.myname.mvc.ControllerZoo;
 import my.myname.mvc.MarshUnmarsh;
 
-public class TestController {
-	private static final Logger LOG = Logger.getLogger(TestController.class);
+public class ControllerZooTest {
+	private static final Logger LOG = Logger.getLogger(ControllerZooTest.class);
 	
 	final List<Food> foodList = new ArrayList<>();
 	final List<Zoo> zooList = new ArrayList<>();
@@ -33,6 +33,7 @@ public class TestController {
 	public void initArrays() {
 		
 		Zoo zoo = new Zoo();
+		zoo.setId(345l);
 		zoo.setName("menskiy");
 		zoo.setDateCreation(new DateTime());
 		Animals animalSobaka = new Animals();
@@ -56,14 +57,16 @@ public class TestController {
 		animalsList.add(animalKot);
 		animalsList.add(animalSobaka);
 		try {
-			zooList.add((Zoo)zoo.clone());
+			Zoo clone = (Zoo)zoo.clone();
+			clone.setId(346l);
+			zooList.add(clone);
 		} catch (CloneNotSupportedException e) {
 			LOG.error("ERROR!",e);
 		}
 	}
 	
 	@Test
-	public void testServices() {
+	public void testGetXmlZoo() {
 		ZooDao zooDao = Mockito.mock(ZooDao.class);
 		MarshUnmarsh marshUnmarsh= Mockito.mock(MarshUnmarsh.class);
 		Mockito.when(marshUnmarsh.getZooList()).thenReturn(zooList);
@@ -76,7 +79,6 @@ public class TestController {
 		try {
 			uiModelMap.addAttribute("xmlZoo", contZoo.getXmlZoo());
 			MarshUnmarsh Unmarsh = (MarshUnmarsh)uiModelMap.get("xmlZoo");
-			LOG.info(Unmarsh.getZooList());
 			assertEquals(2, Unmarsh.getZooList().size());
 		} catch (Throwable e) {
 			LOG.error("ERROR!",e);
@@ -85,25 +87,34 @@ public class TestController {
 	}
 
 	@Test
-	public void testCreate() {
-		final Zoo zoo = new Zoo();
-		zoo.setName("menskiy");
-		zoo.setDateCreation(new DateTime());
+	public void testCreateJsonZoo() {
+
 		ZooDao zooDao = Mockito.mock(ZooDao.class);
-		Mockito.when(zooDao.save(zoo)).thenAnswer(new Answer<Zoo>() {
-			public Zoo answer(InvocationOnMock invocation) throws Throwable {
-				zooList.add(zoo);
-				return zoo;
+		final Zoo zoo = new Zoo();
+		zoo.setId(777l);
+		zoo.setName("Hello");
+		zoo.setDateCreation(new DateTime());
+		zooList.add(zoo);
+		ControllerZoo controller = new ControllerZoo();
+		MarshUnmarsh insertMarsh = Mockito.mock(MarshUnmarsh.class);
+		ReflectionTestUtils.setField(controller, "zooDao", zooDao);
+		Mockito.when(insertMarsh.getZooList()).thenAnswer(new Answer<List<Zoo>>() {
+
+			@Override
+			public List<Zoo> answer(InvocationOnMock invocation) throws Throwable {
+				return zooList;
 			}
 		});
-			
-		ControllerZoo controller = new ControllerZoo();
-		ReflectionTestUtils.setField(controller, "contactService", zooDao);
+		
 //		marshUnmarsh
-//		Zoo zooNew = controller.setJsonZoo(marshUnmarsh);
-//		assertEquals(Long.valueOf(999l), contact.getid());
-//		assertEquals("Rod", contact.getFirstName());
-//		assertEquals("Johnson", contact.getLastName());
-//		assertEquals(2, contacts.size());
+		MarshUnmarsh resmarsh = new MarshUnmarsh();
+		try {
+			resmarsh = controller.setJsonZoo(insertMarsh);
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+		assertEquals(Long.valueOf(777l), resmarsh.getZooList().get(2).getId());
+		assertEquals("Hello", resmarsh.getZooList().get(2).getName());
+		assertEquals(3, zooList.size());
 	}
 }
