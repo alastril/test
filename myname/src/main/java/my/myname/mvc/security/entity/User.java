@@ -94,6 +94,6 @@ public class User implements Serializable{
 	
 	@Override
 	public String toString() {
-		return "Id:"+getId() + ", UserName:" + getUserName() + ", Enable:" + getEnable() + "\n UserRoles:" + getUserRoles().toString();
+		return "Id:"+getId() + ", UserName:" + getUserName() + ", Enable:" + getEnable()+ ", passWord:" + getPassWord() + "\n UserRoles:" + getUserRoles().toString();
 	}
 }

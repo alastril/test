@@ -55,13 +55,13 @@ import my.myname.validation.validators.class_test.ClassforValidationTests;
 public class App {
 	private static final Logger LOG = Logger.getLogger(App.class);
 	public static void main(String[] args) throws Throwable {
-		 System.setProperty("spring.profiles.active", "test1");
-		 GenericXmlApplicationContext ap = new GenericXmlApplicationContext("classpath:spring/rest-context.xml");
-//		 ConfigurableEnvironment env = ap.getEnvironment();
-//		    env.setActiveProfiles("test1");
-//		
-//		ap.load("classpath:spring/rest-context.xml");
-//		ap.refresh(); 
+//		 System.setProperty("spring.profiles.active", "work");
+		 GenericXmlApplicationContext ap = new GenericXmlApplicationContext();
+		 ConfigurableEnvironment env = ap.getEnvironment();
+		    env.setActiveProfiles("work");
+	
+		ap.load("classpath:spring/rest-context.xml");
+		ap.refresh(); 
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
 		FoodService fs = (FoodService) ap.getBean("FoodService");
 

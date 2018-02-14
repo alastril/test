@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans:beans xmlns="http://www.springframework.org/schema/beans"
+<beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
@@ -18,24 +18,17 @@
 		 http://www.springframework.org/schema/data/jpa
          http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
          http://www.springframework.org/schema/context
-         http://www.springframework.org/schema/context/spring-context-3.0.xsd" >
+         http://www.springframework.org/schema/context/spring-context-3.0.xsd" profile="test">
 
-	<import resource="app-config_JMS.xml" />
-	<import resource="app-config_JTA.xml" />
-	<import resource="app-config_Sheduler.xml" />
-	<import resource="app-config_httpInvoker.xml" />
 	<context:annotation-config />
 	<tx:annotation-driven />
-	<aop:aspectj-autoproxy proxy-target-class="true" />
-	<context:component-scan base-package="my.myname" />
-	<context:property-placeholder
-		location="WEB-INF/classes/properties/app.properties"  />
-	<!-- WEB-INF/classes/ -->
-
-
+	<context:component-scan  base-package="src.test.java.my.myname, my.myname.mvc.security.daoImpl" />
 	<jpa:repositories base-package="my.myname"
 		entity-manager-factory-ref="entityManagerFactory"
 		transaction-manager-ref="transactionManagerJPA" />
+	<context:property-placeholder
+		location="properties/app.properties" />
+	<!-- WEB-INF/classes/ -->
 
 
 	<bean id="dataSource"
@@ -43,10 +36,7 @@
 		p:driverClassName="com.mysql.jdbc.Driver" p:url="jdbc:mysql://localhost:3306/my_hibernate"
 		p:username="root" p:password="admin">
 	</bean>
-	<util:properties id="dataSourceProperties">
-		<prop key="defaultAutoCommit">false</prop>
 
-	</util:properties>
 	<bean id="transactionManagerSession" depends-on="sessionFactory"
 		class="org.springframework.orm.hibernate5.HibernateTransactionManager"
 		p:sessionFactory-ref="sessionFactory">
@@ -85,38 +75,13 @@
 	</util:properties>
 
 
+<bean id="databaseTester" class="org.dbunit.DataSourceDatabaseTester">
+	<beans:constructor-arg name="dataSource" ref="dataSource"/>
+</bean>
 
-	<!-- Converters ("conversionService" name - don't change, AppContx override 
-		default converter factory bean) -->
-	<!-- <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean"> 
-		TEST -->
-
-	<bean id="conversionService"
-		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
-		<property name="converters">
-			<list>
-				<bean class="my.myname.validation.converters.StringToDateConverter"></bean>
-				<bean
-					class="my.myname.validation.converters.AnotherTypeTOSimpleBeanConverter"></bean>
-			</list>
-		</property>
-		<property name="formatters">
-			<list>
-				<bean class="my.myname.validation.formaters.Formater"></bean>
-				<bean class="my.myname.validation.formaters.TestAnotationFormatter"></bean>
-			</list>
-		</property>
-	</bean>
-
-	<!-- not jsr_349 -->
-	<bean id="validatorJSR_303"
-		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"></bean>
-
-
+<bean id="xlsDataFileLoader" class="org.dbunit.util.fileloader.XlsDataFileLoader"/>
 	<!-- TEST BEAN -->
-	<bean id="dateConvert" class="my.myname.SimpleBeanImpl" p:dt="14-05-2036"
-		p:name="HELLO, bitch!!!" />
+<!-- 	<bean id="dateConvert" class="my.myname.SimpleBeanImpl" p:dt="14-05-2036" -->
+<!-- 		p:name="HELLO, bitch!!!" /> -->
 
-
-
-</beans:beans> 
+</beans> 
