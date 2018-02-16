@@ -11,6 +11,14 @@ import javax.validation.Validator;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
@@ -22,7 +30,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-
+import org.springframework.integration.message.AdviceMessage;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.PollableChannel;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.ValidationUtils;
@@ -61,13 +73,15 @@ public class App {
 		    env.setActiveProfiles("work");
 	
 		ap.load("classpath:spring/rest-context.xml");
-		ap.refresh(); 
+		ap.refresh();
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
 		FoodService fs = (FoodService) ap.getBean("FoodService");
 
 		UserDao udi = (UserDao) ap.getBean("UserRepository");
 		UserRoleDao urdi = (UserRoleDao) ap.getBean("UserRoleRepository"); 
-
+		
+		callIntegrationSpring(ap);
+//		callBatch(ap);
 //		  callRestRequest(ap);
 //		 ZooSaveCall(ap);
 		// FoodSaveCall(ap); //need for httpInvoker
@@ -75,7 +89,7 @@ public class App {
 //		 JTACall(ap);
 		// converterCall(ap);
 		// AopCall(ap);
-		validatorsCall(ap);
+//		validatorsCall(ap);
 		//asyncCall(ap);
 		//executeTask(ap);
 //		jmsCall(ap);
@@ -338,4 +352,25 @@ public class App {
 		m.getZooList().add(z);
 		rt.postForObject("http://localhost:8080/myname/restful/zoo/jsonzoo", m, Void.class);
 	} 
+	
+	public static void callBatch(ApplicationContext ap) {
+		Job job = ap.getBean(Job.class);
+		JobLauncher jobLauncher = ap.getBean(JobLauncher.class);
+		JobParameters jParameters = new JobParametersBuilder().addDate("date", new Date()).toJobParameters();
+		try {
+			jobLauncher.run(job, jParameters);
+		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
+				| JobParametersInvalidException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void callIntegrationSpring(ApplicationContext ap) {
+		MessageChannel input = (MessageChannel) ap.getBean("input");
+		PollableChannel output = (PollableChannel) ap.getBean("output");
+		input.send(new GenericMessage<String>("Spring Integration rocks"));
+	    Message<?> reply = output.receive();
+	    System.out.println("received: " + reply);
+	}
 }

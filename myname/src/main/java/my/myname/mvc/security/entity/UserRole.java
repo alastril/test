@@ -47,7 +47,7 @@ public class UserRole implements Serializable{
 		this.roleName = roleName;
 	}
 	
-	@ManyToMany(cascade=CascadeType.ALL)
+	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@JoinTable(name="USERS_ROLES", joinColumns= @JoinColumn(name="id_role"), inverseJoinColumns=@JoinColumn(name="id_user"))
 	public List<User> getListUsers() {
 		return listUsers;
@@ -57,8 +57,13 @@ public class UserRole implements Serializable{
 	}
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return  "id:"+getId() + ", RoleName:" + getRoleName() ;
 	}
 	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		UserRole userRole = new UserRole();
+		userRole.setRoleName(this.getRoleName());
+		return userRole;
+	}
 }

@@ -17,7 +17,6 @@ public class ExecutionListener implements TestExecutionListener{
 	@Override
 	public void beforeTestClass(TestContext testContext) throws Exception {
 		databaseTester = testContext.getApplicationContext().getBean(IDatabaseTester.class);
-//		databaseTester.setSetUpOperation(DatabaseOperation.INSERT);
 	}
 	@Override
 	public void beforeTestMethod(TestContext testContext) throws Exception {

@@ -87,13 +87,14 @@ public class User implements Serializable{
 	}
 
 	@Transient
-	public String[] getRolesNames(){
+	public String[] getRolesNames() {
 		return (String[]) userRoles.stream().map(mapper -> {
-			return mapper.getRoleName();}).collect(Collectors.toList()).toArray(new String[getUserRoles().size()]);
+			return mapper.getRoleName();
+		}).collect(Collectors.toList()).toArray(new String[getUserRoles().size()]);
 	}
 	
 	@Override
 	public String toString() {
-		return "Id:"+getId() + ", UserName:" + getUserName() + ", Enable:" + getEnable()+ ", passWord:" + getPassWord() + "\n UserRoles:" + getUserRoles().toString();
+		return "Id:"+getId() + ", UserName:" + getUserName() + ", Enable:" + getEnable()+ ", passWord:" + getPassWord();
 	}
 }

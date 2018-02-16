@@ -4,6 +4,8 @@
 	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:batch="http://www.springframework.org/schema/batch"
+	xmlns:si="http://www.springframework.org/schema/integration"
 	xsi:schemaLocation="
      http://www.springframework.org/schema/aop
      http://www.springframework.org/schema/aop/spring-aop.xsd
@@ -18,7 +20,11 @@
 		 http://www.springframework.org/schema/data/jpa
          http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
          http://www.springframework.org/schema/context
-         http://www.springframework.org/schema/context/spring-context-3.0.xsd" >
+         http://www.springframework.org/schema/context/spring-context-3.0.xsd
+         http://www.springframework.org/schema/batch
+	     http://www.springframework.org/schema/batch/spring-batch.xsd
+	     http://www.springframework.org/schema/integration
+         http://www.springframework.org/schema/integration/spring-integration-5.0.xsd" >
 
 	<import resource="app-config_JMS.xml" />
 	<import resource="app-config_JTA.xml" />
@@ -29,7 +35,7 @@
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 	<context:component-scan base-package="my.myname" />
 	<context:property-placeholder
-		location="WEB-INF/classes/properties/app.properties"  />
+		location="properties/app.properties"  />
 	<!-- WEB-INF/classes/ -->
 
 
@@ -118,5 +124,50 @@
 		p:name="HELLO, bitch!!!" />
 
 
+<!-- BATCHER -->
+<batch:job id="jobUser">
+	<batch:step id="stepUserOne" >
+		<batch:tasklet  transaction-manager="transactionManagerSession">
+			<batch:chunk  reader="itemReader" writer="itemWriter" processor="userItemProcessor" commit-interval="10">
+				<batch:listeners >
+				 	<batch:listener ref="stepExecutionListener"></batch:listener>
+				</batch:listeners>
+			</batch:chunk>
+		</batch:tasklet>
+		<batch:fail on="FAILED"/>
+		<batch:end on="*"/>
+	</batch:step>
+</batch:job>
 
+<bean id="itemReader"
+      class="org.springframework.batch.item.database.HibernateCursorItemReader">
+    <property name="sessionFactory" ref="sessionFactory" />
+    <property name="useStatelessSession" value="false" />
+    <property name="queryString" value="from User u" />
+</bean>
+<bean id="itemWriter" class="my.myname.batch.WriterUserItemImpl" />
+    
+<bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean"  >
+	<beans:property name="transactionManager" ref="transactionManagerSession" />
+</bean>
+<bean id="jobLuncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"  p:jobRepository-ref="jobRepository" />
+
+
+
+<!-- <si:gateway id="simpleGateway" -->
+<!-- 	service-interface="foo.TempConverter" -->
+<!-- 	default-request-channel="simpleExpression" /> -->
+
+<!-- <si:service-activator id="expressionConverter" -->
+<!-- 	input-channel="simpleExpression" -->
+<!-- 	expression="(payload - 32) / 9 * 5"/> -->
+<!-- <si:channel  id="chanelInput"> -->
+<!-- </si:channel> -->
+<!-- <si:channel id="chanelOutput"> -->
+<!-- 	<si:queue capacity="10"/> -->
+<!-- </si:channel> -->
+<si:service-activator input-channel="chanelInput"
+                      output-channel="chanelOutput"
+                      ref="serviceIntegration"
+                      method="getHelloUpper"/>
 </beans:beans> 
