@@ -1,6 +1,5 @@
 package my.myname.batch;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,7 +7,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +27,7 @@ public class WriterUserItemImpl implements ItemWriter<User> {
 				try {
 					action = (UserRole) action.clone();
 				} catch (CloneNotSupportedException e) {
-					LOG.error("Error", e);
+					LOG.error("Error, bitch-kirpich! ", e);
 				}
 				return action;
 			}).collect(Collectors.toList()));

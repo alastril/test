@@ -128,7 +128,7 @@
 <batch:job id="jobUser">
 	<batch:step id="stepUserOne" >
 		<batch:tasklet  transaction-manager="transactionManagerSession">
-			<batch:chunk  reader="itemReader" writer="itemWriter" processor="userItemProcessor" commit-interval="10">
+			<batch:chunk  reader="itemReader" writer="itemWriter" processor="userItemProcessor" commit-interval="100">
 				<batch:listeners >
 				 	<batch:listener ref="stepExecutionListener"></batch:listener>
 				</batch:listeners>
@@ -153,21 +153,15 @@
 <bean id="jobLuncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"  p:jobRepository-ref="jobRepository" />
 
 
-
-<!-- <si:gateway id="simpleGateway" -->
-<!-- 	service-interface="foo.TempConverter" -->
-<!-- 	default-request-channel="simpleExpression" /> -->
-
-<!-- <si:service-activator id="expressionConverter" -->
-<!-- 	input-channel="simpleExpression" -->
-<!-- 	expression="(payload - 32) / 9 * 5"/> -->
-<!-- <si:channel  id="chanelInput"> -->
-<!-- </si:channel> -->
-<!-- <si:channel id="chanelOutput"> -->
-<!-- 	<si:queue capacity="10"/> -->
-<!-- </si:channel> -->
+<!-- Spring integration -->
+<si:channel  id="chanelInput">
+</si:channel>
+<si:channel id="chanelOutput">
+	<si:queue capacity="10"/>
+</si:channel>
 <si:service-activator input-channel="chanelInput"
                       output-channel="chanelOutput"
                       ref="serviceIntegration"
                       method="getHelloUpper"/>
+                      
 </beans:beans> 

@@ -361,15 +361,14 @@ public class App {
 			jobLauncher.run(job, jParameters);
 		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
 				| JobParametersInvalidException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
 	public static void callIntegrationSpring(ApplicationContext ap) {
-		MessageChannel input = (MessageChannel) ap.getBean("input");
-		PollableChannel output = (PollableChannel) ap.getBean("output");
-		input.send(new GenericMessage<String>("Spring Integration rocks"));
+		MessageChannel input = (MessageChannel) ap.getBean("chanelInput");
+		PollableChannel output = (PollableChannel) ap.getBean("chanelOutput");
+		input.send(new GenericMessage<String>("vasya pypkin!"));
 	    Message<?> reply = output.receive();
 	    System.out.println("received: " + reply);
 	}
