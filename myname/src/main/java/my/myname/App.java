@@ -8,7 +8,9 @@ import java.util.concurrent.ExecutionException;
 
 import javax.validation.Validator;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.joda.time.DateTime;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.batch.core.Job;
@@ -67,11 +69,10 @@ import my.myname.validation.validators.class_test.ClassforValidationTests;
 public class App {
 	private static final Logger LOG = Logger.getLogger(App.class);
 	public static void main(String[] args) throws Throwable {
-//		 System.setProperty("spring.profiles.active", "work");
 		 GenericXmlApplicationContext ap = new GenericXmlApplicationContext();
 		 ConfigurableEnvironment env = ap.getEnvironment();
 		    env.setActiveProfiles("work");
-	
+		    
 		ap.load("classpath:spring/rest-context.xml");
 		ap.refresh();
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
@@ -79,9 +80,9 @@ public class App {
 
 		UserDao udi = (UserDao) ap.getBean("UserRepository");
 		UserRoleDao urdi = (UserRoleDao) ap.getBean("UserRoleRepository"); 
-		
+
 		callIntegrationSpring(ap);
-//		callBatch(ap);
+		callBatch(ap);
 //		  callRestRequest(ap);
 //		 ZooSaveCall(ap);
 		// FoodSaveCall(ap); //need for httpInvoker
@@ -97,7 +98,9 @@ public class App {
 //		 while(true) {
 //		   
 //			}
-		
+//		org.springframework.xd.jdbc.NamedColumnJdbcBatchItemWriter
+//		org.springframework.batch.item.file.FlatFileItemReader
+//		org.springframework.batch.item.file.mapping.DefaultLineMapper
 	}
 
 	public static void AopCall(ApplicationContext ap) {
@@ -147,7 +150,7 @@ public class App {
 				System.out.println(animals.toString());
 			}
 		}
-
+    
 		//zd.deleteZoo(zoo);
 		
 	}
