@@ -28,7 +28,9 @@ public class UserSecurityService implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userDao.getUserByName(username);
-				UserDetails  userSecurity = 
+		UserDetails  userSecurity;
+		if(user!=null) {
+				userSecurity = 
 				org.springframework.security.core.userdetails.User.
 				builder().
 				username(username).
@@ -39,6 +41,11 @@ public class UserSecurityService implements UserDetailsService{
 				credentialsExpired(false).
 				roles(user.getRolesNames()).
 				build();
+		}else {
+			userSecurity= org.springframework.security.core.userdetails.User.
+			builder().accountLocked(true).password("").username("error").roles(new String[] {}).build();
+		}
+		
 		return userSecurity;
 	}
 

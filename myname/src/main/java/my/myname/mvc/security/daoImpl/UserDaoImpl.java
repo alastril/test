@@ -49,8 +49,8 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	@Transactional("transactionManagerSession")
 	public User getUserByName(String userName) {
-		return (User) sessFac.getCurrentSession().getNamedQuery("GetUserByName").setParameter("userName", userName)
-				.getSingleResult();
+		List<User> listUsers = (List<User>) sessFac.getCurrentSession().getNamedQuery("GetUserByName").setParameter("userName", userName).getResultList();
+		return listUsers.size()>0?listUsers.get(0):null;
 	}
 
 

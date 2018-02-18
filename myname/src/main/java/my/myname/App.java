@@ -72,7 +72,7 @@ public class App {
 		 GenericXmlApplicationContext ap = new GenericXmlApplicationContext();
 		 ConfigurableEnvironment env = ap.getEnvironment();
 		    env.setActiveProfiles("work");
-		    
+		     
 		ap.load("classpath:spring/rest-context.xml");
 		ap.refresh();
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
