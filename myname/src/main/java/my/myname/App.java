@@ -1,5 +1,7 @@
 package my.myname;
 
+import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,12 +38,37 @@ import org.springframework.integration.message.AdviceMessage;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.PollableChannel;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.converter.StringMessageConverter;
+import org.springframework.messaging.simp.stomp.StompCommand;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandler;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.messaging.support.GenericMessage;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
+import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketHandler;
+import org.springframework.web.socket.WebSocketHttpHeaders;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.client.WebSocketClient;
+import org.springframework.web.socket.client.WebSocketConnectionManager;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
+import org.springframework.web.socket.server.standard.TomcatRequestUpgradeStrategy;
+import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
+import org.springframework.web.socket.sockjs.client.RestTemplateXhrTransport;
+import org.springframework.web.socket.sockjs.client.SockJsClient;
+import org.springframework.web.socket.sockjs.client.Transport;
+import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import my.myname.aop.PointCut;
 import my.myname.crud_spr_data.entity.Animals;
@@ -61,6 +88,9 @@ import my.myname.shedulers.TaskToExecute;
 import my.myname.validation.converters.AnotherTypeForConvert;
 import my.myname.validation.validators.ValidatorImpl;
 import my.myname.validation.validators.class_test.ClassforValidationTests;
+import my.myname.web_socket.EchoClientHandler;
+import my.myname.web_socket.EchoServerHandler;
+import sun.net.www.content.text.plain;
 
 /**
  * Hello world!
@@ -79,10 +109,12 @@ public class App {
 		FoodService fs = (FoodService) ap.getBean("FoodService");
 
 		UserDao udi = (UserDao) ap.getBean("UserRepository");
-		UserRoleDao urdi = (UserRoleDao) ap.getBean("UserRoleRepository"); 
+		UserRoleDao urdi = (UserRoleDao) ap.getBean("UserRoleRepository");
 
-		callIntegrationSpring(ap);
-		callBatch(ap);
+		callWebSocket();
+		callSTOMPWebSocket();
+//		callIntegrationSpring(ap);
+//		callBatch(ap);
 //		  callRestRequest(ap);
 //		 ZooSaveCall(ap);
 		// FoodSaveCall(ap); //need for httpInvoker
@@ -309,7 +341,7 @@ public class App {
 		System.out.println(frst.get());
 		System.out.println(scnd.get());
 		System.out.println(trd.get());
-
+ 
 	}
 	
 	public static void executeTask(ApplicationContext ap) {
@@ -354,6 +386,8 @@ public class App {
 		z.setDateCreation(new DateTime());
 		m.getZooList().add(z);
 		rt.postForObject("http://localhost:8080/myname/restful/zoo/jsonzoo", m, Void.class);
+
+
 	} 
 	
 	public static void callBatch(ApplicationContext ap) {
@@ -374,5 +408,76 @@ public class App {
 		input.send(new GenericMessage<String>("vasya pypkin!"));
 	    Message<?> reply = output.receive();
 	    System.out.println("received: " + reply);
+	}
+	
+	public static void callWebSocket() {
+		System.out.println();
+		WebSocketClient webSocketClient = new StandardWebSocketClient();
+		
+		//WebSocketHandlers test
+		ListenableFuture<WebSocketSession> test =  webSocketClient.doHandshake(
+				new EchoClientHandler(), "ws://localhost:8080/myname/testJava",
+				new Object[] {});
+		try {
+			
+			test.get().sendMessage(new TextMessage("hello testJava".getBytes()));
+			Thread.currentThread().sleep(500);//wait end all operations
+			test.get().close();
+			//for spring-config need add mvc path("/restful")
+			test =  webSocketClient.doHandshake(new EchoClientHandler(), "ws://localhost:8080/myname/restful/websocket", new Object[] {});
+			test.get().sendMessage(new TextMessage("Hello server!".getBytes()));
+			Thread.currentThread().sleep(500);//wait end all operations
+			test.get().close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println();
+	}
+	
+	private static void callSTOMPWebSocket() {
+		WebSocketClient webSocketClient = new StandardWebSocketClient();
+		List<Transport> transports = new ArrayList<>(1);
+		transports.add(new WebSocketTransport(webSocketClient));
+		SockJsClient sockJsClient = new SockJsClient(transports);
+		WebSocketStompClient stompClient = new WebSocketStompClient(sockJsClient);
+		stompClient.setMessageConverter(new StringMessageConverter());
+		
+		//add inner subscriber after connection
+		StompSessionHandler sessionHandler = new StompSessionHandlerAdapter() {
+			@Override
+			public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+				System.out.println("Connection to STOMP established.");
+				session.subscribe("/topic/pointToSend", new StompFrameHandler() {// "/topic"- broker address, "/pointToSend"- directly destination of messages
+				    @Override
+				    public Type getPayloadType(StompHeaders headers) {
+				        return String.class;
+				    }
+
+				    @Override
+				    public void handleFrame(StompHeaders headers,Object payload) {
+				        System.out.println("Subscriber has recive: " +payload.toString());
+				    }
+				});
+			}
+
+			@Override
+			public void handleException(StompSession session, StompCommand command, StompHeaders headers,
+					byte[] payload, Throwable exception) {
+				System.out.println(exception.getMessage());
+				exception.printStackTrace();
+			}
+		};
+		 
+		try {  
+			StompSession ses = stompClient.connect("ws://localhost:8080/myname/restful/stompEndPoint", sessionHandler).get();
+			Thread.currentThread().sleep(100);//wait when session will be built
+			ses.send("/app/pointToSend", "HEllo, bitch!!!!!!".getBytes());
+			Thread.currentThread().sleep(15000);//for testing from postman(as example), waiting response. Enough 100ms
+			ses.disconnect();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 }

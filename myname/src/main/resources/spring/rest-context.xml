@@ -64,7 +64,7 @@
 			method="POST" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')" />
 		<sec:intercept-url pattern="/restful/zoo/jsonzoo"
 			method="POST" access="hasRole('ROLE_ADMIN')" />
-		<sec:intercept-url pattern="/**" access="isAuthenticated()" />
+<!-- 		<sec:intercept-url pattern="/**" access="isAuthenticated()" />  make all security-->
 		<sec:csrf disabled="true" /> <!-- for postman -->
 		<sec:remember-me use-secure-cookie="false" />
 	</sec:http>

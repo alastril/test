@@ -1,24 +1,18 @@
 package my.myname.mvc;
 
 
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,7 +38,10 @@ public class ControllerZoo {
 	private ZooDao zooDao;
 	@Autowired
 	private MarshUnmarsh rootDocument;
-
+	@Autowired
+	SimpMessagingTemplate template;
+//	@Autowired
+//	 st;
 
 
 	@RequestMapping(value="/xmlzoo", method=RequestMethod.GET, produces=MediaType.APPLICATION_XML_VALUE)
@@ -87,16 +84,39 @@ public class ControllerZoo {
 		}
 		return marshUnmarsh;
 	}
+
 	
-	@RequestMapping(value="/test", method=RequestMethod.POST, consumes =  MediaType.APPLICATION_JSON_VALUE)
-	@ResponseStatus(code=HttpStatus.CREATED)
-	public void setJson(@RequestBody SimpleBeanImpl marshUnmarsh) throws Throwable{
+	
+////WebSocket Test requests!!!!!1111
+	/**
+	 * Send message from rest request to websocket
+	 * @param message
+	 * @throws Throwable
+	 */
+	@RequestMapping(value= {"/sendWebSocketMess"},method=RequestMethod.POST, consumes= {MediaType.TEXT_PLAIN_VALUE})
+	public void webSocketSend(@RequestBody String message) throws Throwable{
 		try {    
-			System.out.println(marshUnmarsh);
+			 
+			System.out.println("Rest send to websocket: "+message);
+			template.convertAndSend("/topic/pointToSend", message);// "/topic" because SimpMessagingTemplate.class don't know about default broker
+		
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
 		}
+		
 	}
+	
+	@MessageMapping("/pointToSend")
+//	@SendTo("/topic/pointToSend")
+	public String webSocketGet(String message) throws Throwable{
+		try {    
+			System.out.println("webSocketGet: "+message);
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+		}
+		return message.toUpperCase();
+	}
+	
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> handleIllegalArgumentException(Exception ex) {
