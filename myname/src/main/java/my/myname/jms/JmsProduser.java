@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class JmsProduser {
@@ -20,9 +21,11 @@ public class JmsProduser {
 	@Autowired
 	Topic topicDest;
 
+	@Transactional(transactionManager = "transactionМanagerAtomicos", rollbackFor = Exception.class)
 	public void sendToTopic(String msg) {
 		jms.convertAndSend(topicDest, msg);
 	}
+	@Transactional(transactionManager = "transactionМanagerAtomicos", rollbackFor = Exception.class)
 	public void sendToQueue(String msg) {
 		jms.convertAndSend(queueDest, msg);
 	}
