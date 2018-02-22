@@ -109,7 +109,7 @@ public class ControllerZoo {
 	@MessageMapping("/pointToSend")
 //	@SendTo("/topic/pointToSend")
 	public String webSocketGet(String message) throws Throwable{
-		try {    
+		try {
 			System.out.println("webSocketGet: "+message);
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);

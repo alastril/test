@@ -38,7 +38,7 @@
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 	<context:component-scan base-package="my.myname" />
 	<context:property-placeholder
-		location="properties/app.properties"  />
+		location="WEB-INF/classes/properties/app.properties" />
 	<!-- WEB-INF/classes/ -->
 
 
@@ -91,6 +91,8 @@
 		<prop key="hibernate.format_sql">true</prop>
 		<prop key="hibernate.hbm2ddl.auto">create-drop</prop>
 		<prop key="hibernate.id.new_generator_mappings">false</prop>
+		<prop key="hibernate.generate_statistics">true</prop>
+		<prop key="hibernate.session_factory_name">sessionFactory</prop>
 	</util:properties>
 
 
@@ -170,5 +172,22 @@
 		output-channel="chanelOutput" ref="serviceIntegration" method="getHelloUpper" />
 
 
+<!-- <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean"> -->
+<!--     <property name="locateExistingServerIfPossible" value="true" /> -->
+<!-- </bean> -->
+	<beans:bean id="jmxExporter"
+		class="org.springframework.jmx.export.MBeanExporter">
+		<property name="beans">
+			<map>
+				<beans:entry key="bean:name=JmxUserRepository"
+					value-ref="userRepository">
+				</beans:entry>
+				<beans:entry key="bean:name=JmxUser" value-ref="user">
+				</beans:entry>
+				<beans:entry key="Hibernate:application=Statistics" value-ref="hibernateJmx">
+				</beans:entry>
+			</map>
+		</property>
+	</beans:bean>
 
 </beans:beans> 

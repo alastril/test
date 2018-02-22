@@ -111,21 +111,21 @@ public class App {
 		UserDao udi = (UserDao) ap.getBean("UserRepository");
 		UserRoleDao urdi = (UserRoleDao) ap.getBean("UserRoleRepository");
 
-		callWebSocket();
-		callSTOMPWebSocket();
+//		callWebSocket();
+//		callSTOMPWebSocket();
 //		callIntegrationSpring(ap);
 //		callBatch(ap);
 //		  callRestRequest(ap);
 //		 ZooSaveCall(ap);
 		// FoodSaveCall(ap); //need for httpInvoker
 //		 formatersCall(ap);
-//		 JTACall(ap);
+		 JTACall(ap);
 		// converterCall(ap);
 		// AopCall(ap);
 //		validatorsCall(ap);
 		//asyncCall(ap);
 		//executeTask(ap);
-//		jmsCall(ap);
+		jmsCall(ap);
 //		 httpInvoker(ap);//need deploy application to servlet container(tomcat)
 //		 while(true) {
 //		   
@@ -435,7 +435,7 @@ public class App {
 		System.out.println();
 	}
 	
-	private static void callSTOMPWebSocket() {
+	private static void callSTOMPWebSocket() { 
 		WebSocketClient webSocketClient = new StandardWebSocketClient();
 		List<Transport> transports = new ArrayList<>(1);
 		transports.add(new WebSocketTransport(webSocketClient));
