@@ -103,7 +103,7 @@ public class App {
 		 ConfigurableEnvironment env = ap.getEnvironment();
 		    env.setActiveProfiles("work");
 		     
-		ap.load("classpath:spring/rest-context.xml");
+		ap.load("classpath:config_xml/app-config.xml");
 		ap.refresh();
 		ZooDao zd = (ZooDao) ap.getBean("ZooDao");
 		FoodService fs = (FoodService) ap.getBean("FoodService");
@@ -116,16 +116,16 @@ public class App {
 //		callIntegrationSpring(ap);
 //		callBatch(ap);
 //		  callRestRequest(ap);
-//		 ZooSaveCall(ap);
+		 ZooSaveCall(ap);
 		// FoodSaveCall(ap); //need for httpInvoker
 //		 formatersCall(ap);
-		 JTACall(ap);
+//		 JTACall(ap);
 		// converterCall(ap);
 		// AopCall(ap);
 //		validatorsCall(ap);
 		//asyncCall(ap);
 		//executeTask(ap);
-		jmsCall(ap);
+//		jmsCall(ap);
 //		 httpInvoker(ap);//need deploy application to servlet container(tomcat)
 //		 while(true) {
 //		   
@@ -472,7 +472,7 @@ public class App {
 		try {  
 			StompSession ses = stompClient.connect("ws://localhost:8080/myname/restful/stompEndPoint", sessionHandler).get();
 			Thread.currentThread().sleep(100);//wait when session will be built
-			ses.send("/app/pointToSend", "HEllo, bitch!!!!!!".getBytes());
+			ses.send("/app/pointToSend", "Here is a Johny!!!!!!".getBytes());
 			Thread.currentThread().sleep(15000);//for testing from postman(as example), waiting response. Enough 100ms
 			ses.disconnect();
 		} catch (Exception e) {

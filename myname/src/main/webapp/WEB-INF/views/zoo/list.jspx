@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+		xmlns:c= "http://java.sun.com/jsp/jstl/core"
+		xmlns:joda="http://www.joda.org/joda/time/tags"
+		version="2.0">
+		<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+		<jsp:output omit-xml-declaration="yes"/>
+		<H1>Hi, guys!</H1>
+		<c:if test ="${not empty zooList}">
+				<table>
+					<thead >
+						<tr >
+							<th >id</th>
+							<th >name</th>
+							<th >dateCreation </th>
+						</tr>
+					</thead>
+					<tbody>
+							<c:forEach items="${zooList}"  var="z">
+								<tr>
+									<th>${z.id}</th>
+									<th>${z.name}</th>
+									<th> <joda:format value="${z.dateCreation}" pattern="yyyy-MM-dd" /> </th>
+								</tr>
+							</c:forEach>
+					</tbody>
+				</table>
+		</c:if>
+		</div>

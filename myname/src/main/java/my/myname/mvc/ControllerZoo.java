@@ -3,6 +3,8 @@ package my.myname.mvc;
 
 
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -13,8 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,10 +44,8 @@ public class ControllerZoo {
 	private MarshUnmarsh rootDocument;
 	@Autowired
 	SimpMessagingTemplate template;
-//	@Autowired
-//	 st;
 
-
+	@PreAuthorize("#oauth2.hasScope('read')")
 	@RequestMapping(value="/xmlzoo", method=RequestMethod.GET, produces=MediaType.APPLICATION_XML_VALUE)
 	public @ResponseBody MarshUnmarsh getXmlZoo() throws Throwable{
 		try {
@@ -54,7 +56,7 @@ public class ControllerZoo {
 		return rootDocument;
 	}
 	 
-   
+	@PreAuthorize("#oauth2.hasScope('read')")
 	@RequestMapping(value="/xmlzoo", method=RequestMethod.POST, consumes =  MediaType.APPLICATION_XML_VALUE)
 	@ResponseStatus(code=HttpStatus.CREATED)
 	public void setXmlZoo(@RequestBody MarshUnmarsh marshUnmarsh) throws Throwable{
@@ -115,6 +117,15 @@ public class ControllerZoo {
 			log.error(e.getMessage(),e);
 		}
 		return message.toUpperCase();
+	}
+
+	@RequestMapping(value = "/zoo_view", method=RequestMethod.GET)
+	public String callViewsZoo(Model uiModel) {
+		log.info("CallViewsZoo method!");
+		List<Zoo> listZoo = zooDao.getListZoo();
+		uiModel.addAttribute("zooList", listZoo); 
+		log.info("size - " + listZoo.size());
+		return "zoo/list";
 	}
 	
 	

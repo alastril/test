@@ -15,12 +15,47 @@
 		not recognize it... so what to do if we want use DispatcherServlet and ContextLoaderListener? 
 		Use all configs in ContextLoaderListener because its root WebApplicationContext 
 		and he can share own data to other Context like DispatcherServlet(as result 
-		recognize mvc-annotations in ContextLoaderListener). -->
+		recognize mvc-annotations in ContextLoaderListener). 
+		-Dspring.profiles.active=work -->
 	<display-name>Spring НТТР Invoker Sample</display-name>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>/WEB-INF/classes/spring/rest-context.xml</param-value>
 	</context-param>
+	
+		<filter>
+			<filter-name>CharacterEncodingFilter</filter-name>
+			<filter-class> org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+			<init-param>
+				<param-name>encoding</param-name>
+				<param-value>UTF-8</param-value>
+			</init-param>
+			<init-param>
+				<param-name>forceEncoding</param-name>
+				<param-value>true</param-value>
+			</init-param>
+		</filter>
+		<filter>
+			<filter-name>HttpMethodFilter</filter-name>
+			<filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+		</filter> 
+		<filter>
+			<filter-name>SpringOpenEntityManagerinViewFilter</filter-name>
+			<filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+		</filter>
+		<filter-mapping>
+			<filter-name>CharacterEncodingFilter</filter-name>
+			<url-pattern>/*</url-pattern>
+		</filter-mapping>
+		<filter-mapping>
+			<filter-name>HttpMethodFilter</filter-name>
+			<url-pattern>/*</url-pattern>
+		</filter-mapping>
+		<filter-mapping>
+			<filter-name>SpringOpenEntityManagerinViewFilter</filter-name>
+			<url-pattern>/*</url-pattern>
+		</filter-mapping>
+
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
@@ -33,8 +68,7 @@
 			<param-value></param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
-		<async-supported>true</async-supported> 
-		
+		<async-supported>true</async-supported>
 	</servlet>
 	<servlet>
 		<!-- important! servlet name must be as bean name of HttpRequestHandlerServlet 
