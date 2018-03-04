@@ -429,7 +429,6 @@ public class App {
 			Thread.currentThread().sleep(500);//wait end all operations
 			test.get().close();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println();

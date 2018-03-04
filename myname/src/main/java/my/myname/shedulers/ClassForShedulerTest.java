@@ -119,7 +119,6 @@ public class ClassForShedulerTest implements ShedulerAndAsync{
 		try {
 			Thread.sleep(1000L);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

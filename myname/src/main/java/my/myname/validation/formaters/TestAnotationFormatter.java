@@ -33,7 +33,7 @@ public class TestAnotationFormatter implements AnnotationFormatterFactory<Anotat
 	 */
 	@Override
 	public Printer<?> getPrinter(AnotationFormater annotation, Class<?> fieldType) {
-		//TODO AOP LOG
+		
 		FormaterForAnotation formater = new FormaterForAnotation();
 		formater.setNewChar(annotation.newChar());
 		formater.setOldChar(annotation.oldChar());
@@ -45,7 +45,7 @@ public class TestAnotationFormatter implements AnnotationFormatterFactory<Anotat
 	 */
 	@Override
 	public Parser<?> getParser(AnotationFormater annotation, Class<?> fieldType) {
-		//TODO AOP LOG
+		
 		FormaterForAnotation formater = new FormaterForAnotation();
 		formater.setNewChar(annotation.newChar());
 		formater.setOldChar(annotation.oldChar());

@@ -59,7 +59,7 @@
 	<bean id="transactionManagerSession" depends-on="sessionFactory"
 		class="org.springframework.orm.hibernate5.HibernateTransactionManager"
 		p:sessionFactory-ref="sessionFactory">
-		<qualifier value="transactionManagerSession" />
+		<qualifier value="transactionManager" />
 	</bean>
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
