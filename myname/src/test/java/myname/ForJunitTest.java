@@ -39,12 +39,13 @@ public class ForJunitTest {
 		assertTrue(ju.getRandomByCount(10,20).size()==10); 
 	}
 	
+//	@Test
 	public void testOauth() {
 		 ResourceOwnerPasswordResourceDetails resourceDetails = new ResourceOwnerPasswordResourceDetails();
-	        resourceDetails.setUsername("roy");
-	        resourceDetails.setPassword("spring");
-	        resourceDetails.setAccessTokenUri("http://localhost/oauth/token");
-	        resourceDetails.setClientId("key");
+	        resourceDetails.setUsername("pasha");
+	        resourceDetails.setPassword("baseSecret");
+	        resourceDetails.setAccessTokenUri("http://localhost:8080/myname/restful/oauth/token");
+	        resourceDetails.setClientId("pasha");
 	        resourceDetails.setClientSecret("123456");
 	        resourceDetails.setGrantType("password");
 	        resourceDetails.setScope(Arrays.asList("read", "write"));
@@ -54,7 +55,7 @@ public class ForJunitTest {
 	        OAuth2RestTemplate restTemplate = new OAuth2RestTemplate(resourceDetails, clientContext);
 	        restTemplate.setMessageConverters(Arrays.asList(new MappingJackson2HttpMessageConverter()));
 
-	        final String greeting = restTemplate.getForObject("http://localhost/greeting", String.class);
+	        final String greeting = restTemplate.getForObject("http://localhost:8080/myname/restful/zoo/xmlzoo", String.class);
 
 	        System.out.println(greeting);
 	}
