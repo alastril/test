@@ -38,7 +38,7 @@
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 	<context:component-scan base-package="my.myname" />
 	<context:property-placeholder
-		location="WEB-INF/classes/properties/app.properties" />
+		location="properties/app.properties" />
 	<!-- WEB-INF/classes/ -->
 
 

@@ -95,4 +95,15 @@
 		<beans:property name="prefix" value="/WEB-INF/views/" />
 		<beans:property name="suffix" value=".jspx" />
 	</beans:bean>
+	
+	<mvc:default-servlet-handler/>
+
+	<mvc:interceptors>
+		<beans:bean
+			class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"
+			p:paramName="lang" />
+	</mvc:interceptors>
+	<beans:bean id="messSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
+	p:basenames="WEB-INF/i18n/messages, WEB-INF/i18n/application" p:fallbackToSystemLocale="false"/>
+	<beans:bean class="org.springframework.web.servlet.i18n.CookieLocaleResolver" id="localResolver" p:cookieName="locale"/>
 </beans:beans>

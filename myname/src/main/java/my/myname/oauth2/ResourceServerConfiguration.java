@@ -43,12 +43,13 @@ public class ResourceServerConfiguration  extends ResourceServerConfigurerAdapte
 	 */
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
-        and().requestMatchers().antMatchers("/**")
+		http.sessionManagement()
+		.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+        .and().requestMatchers().antMatchers("/**")
         .and()
         .authorizeRequests()
-        .anyRequest().authenticated().
-		antMatchers(HttpMethod.GET, "/restful/zoo/xmlzoo").access("#oauth2.hasScope('read')")//only for client with read scope
+		.antMatchers(HttpMethod.GET, "/restful/zoo/xmlzoo").access("#oauth2.hasScope('read')")//only for client with read scope
+		.anyRequest().authenticated()//if this ".anyRequest().authenticated()" set before ".access("#oauth2.hasScope('read')")" we can authenticate by "Basic Auth", #oauth2.hasScope('read')- will ignore
 //		antMatchers("/restful/oauth/token").access("hasRole('USER')")
         .and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler())
           .and()
