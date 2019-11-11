@@ -116,10 +116,10 @@ public class App {
 //		callIntegrationSpring(ap);
 //		callBatch(ap);
 //		  callRestRequest(ap);
-		 ZooSaveCall(ap);
+		 //ZooSaveCall(ap);
 		// FoodSaveCall(ap); //need for httpInvoker
 //		 formatersCall(ap);
-//		 JTACall(ap);
+		 JTACall(ap);
 		// converterCall(ap);
 		// AopCall(ap);
 //		validatorsCall(ap);
@@ -193,8 +193,6 @@ public class App {
 	 * but with session is okay
 	 * 
 	 * @param ap
-	 * @param fs
-	 * @param zd
 	 * @throws Throwable
 	 */
 	public static void FoodSaveCall(ApplicationContext ap) throws Throwable {
@@ -246,14 +244,16 @@ public class App {
 		an.setName("sobaken");
 		Animals an2 = new Animals();
 		an2.setName("kotyara");
+		Animals postgres = new Animals();
+		postgres.setName("postgres pes smerdyaschiy");
 		//zd.save(an);
-		zd.saveJTA(an, an2);
-		zd.saveJTA(an2, an);
+		zd.saveJTA(an, an2, postgres);
+		zd.saveJTA(an2, an, postgres);
 		List<Animals> al = zd.getListAnimals();
 		for (Animals a : al) {
-			System.out.println(a.toString());
+			System.out.println("a => "+a.toString());
 			for (Food fod : a.getFoodList()) {
-				System.out.println(fod.toString());
+				System.out.println("f => "+fod.toString());
 			}
 		}
 	}

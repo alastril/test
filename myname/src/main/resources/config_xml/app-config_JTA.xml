@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
-	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
-	xsi:schemaLocation="
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="
      http://www.springframework.org/schema/aop
      http://www.springframework.org/schema/aop/spring-aop.xsd
      http://www.springframework.org/schema/jdbc
@@ -20,109 +21,157 @@
          http://www.springframework.org/schema/context
          http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    
-		<bean id="dataSourceA" class="com.atomikos.jdbc.AtomikosDataSourceBean"
-		init-method="init" destroy-method="close">
-		<property name="uniqueResourceName" value="XADBMSA" />
-		<property name="xaDataSourceClassName"
-			value="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" />
+    <!--  Ahtung, Atation, Alo blyat'!  Before start:
+     1.Set MYSQL variable default-time-zone, example = "+3:00"
+     2.For Postgres set max_prepared_transactions(better equals max_connections)-->
+    <bean id="dataSourceA" class="com.atomikos.jdbc.AtomikosDataSourceBean"
+          init-method="init" destroy-method="close">
+        <property name="uniqueResourceName" value="XADBMSA"/>
+        <property name="xaDataSourceClassName"
+                  value="com.mysql.cj.jdbc.MysqlXADataSource"/>
+        <property name="xaProperties">
+            <props>
+                <prop key="url">jdbc:mysql://localhost:3306/my_hibernate</prop>
+                <prop key="user">root</prop>
+                <prop key="password">admin</prop>
+            </props>
+        </property>
+        <property name="poolSize" value="10"/>
+    </bean>
+    <bean id="dataSourceB" class="com.atomikos.jdbc.AtomikosDataSourceBean"
+          init-method="init" destroy-method="close">
+        <property name="uniqueResourceName" value="XADBMSB"/>
+        <property name="xaDataSourceClassName"
+                  value="com.mysql.cj.jdbc.MysqlXADataSource"/>
+        <property name="xaProperties">
+            <props>
+                <prop key="url">jdbc:mysql://localhost:3306/test_jta</prop>
+                <prop key="user">root</prop>
+                <prop key="password">admin</prop>
+            </props>
+        </property>
+        <property name="poolSize" value="10"/>
+    </bean>
 
-		<property name="xaProperties">
-			<props>
-			
-				<prop key="url">jdbc:mysql://localhost:3306/my_hibernate</prop>
-				<prop key="user">root</prop>
-				<prop key="password">admin</prop>
-			</props>
-		</property>
-		<property name="poolSize" value="10" />
-	</bean>
-	<bean id="dataSourceB" class="com.atomikos.jdbc.AtomikosDataSourceBean"
-		init-method="init" destroy-method="close">
-		<property name="uniqueResourceName" value="XADBMSB" />
-		<property name="xaDataSourceClassName"
-			value="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" />
+    <bean id="dataSourcePostgres" class="com.atomikos.jdbc.AtomikosDataSourceBean"
+          init-method="init" destroy-method="close">
+        <property name="uniqueResourceName" value="XADBMSC"/>
+        <property name="xaDataSourceClassName"
+                  value="org.postgresql.xa.PGXADataSource"/>
+        <property name="xaProperties">
+            <props>
+                <prop key="url">jdbc:postgresql://localhost:5432/test_pg</prop>
+                <prop key="user">postgres</prop>
+                <prop key="password">admin</prop>
+            </props>
+        </property>
+        <property name="poolSize" value="10"/>
+    </bean>
+    <!-- 	org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean -->
+    <!-- org.springframework.orm.hibernate5.LocalSessionFactoryBean -->
+    <bean id="emfBase"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+          abstract="true">
+        <!-- 		<property name="persistenceXmlLocation"> -->
+        <!--             <value>classpath*:persistence.xml</value> -->
+        <!--     	</property> -->
 
-		<property name="xaProperties">
-			<props>
-				<prop key="url">jdbc:mysql://localhost:3306/test_jta</prop>
-				<prop key="user">root</prop>
-				<prop key="password">admin</prop>
-			</props>
-		</property>
-		<property name="poolSize" value="10" />
-	</bean>
-<!-- 	org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean -->
-<!-- org.springframework.orm.hibernate5.LocalSessionFactoryBean -->
-	<bean id="emfBase"
-		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
-		abstract="true">
-<!-- 		<property name="persistenceXmlLocation"> -->
-<!--             <value>classpath*:persistence.xml</value> -->
-<!--     	</property> -->
-		
-<!-- 		<property name="packagesToScan" value="my.myname" /> -->
-<!--     <property name="jtaTransactionManager" ref="transactionМanagerAtomicos"></property> -->
-<!--     <property name="hibernateProperties"> -->
-<!--             <props> -->
-<!--                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop> -->
-<!--                 <prop key="hibernate.show_sql">true</prop> -->
-<!--                 <prop key="hibernate.format_sql">true</prop> -->
-<!--                 <prop key="hibernate.use_sql_comments">false</prop> -->
-<!--                 <prop key="hibernate.current_session_context_class">jta</prop>  -->
-<!--                 <prop key="hibernate.max_fetch_depth">3</prop> -->
-<!-- 				<prop key="hibernate.jdЬc.fetch_size">50</prop> -->
-<!-- 				<prop key="hibernate.jdЬc.batch_size">10</prop> -->
-<!-- 		<prop key="hibernate.hbm2ddl.auto">create-drop</prop> -->
-<!-- 		<prop key="hibernate.id.new_generator_mappings">false</prop>         -->
-<!--             </props> -->
-<!--         </property> -->
-		<property name="jpaVendorAdapter">
-			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
-		</property>
-		<property name="packagesToScan" value="my.myname" />
-		<property name="jpaProperties">
-			<props>
-				<prop key="hibernate.current_session_context_class">jta</prop> 
-   <prop key="hibernate.transaction.factory_class"> 
-       org.hibernate.transaction.JTATransactionFactory 
-   </prop> 
-   <prop key="hibernate.transaction.manager_lookup_class"> 
-      org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform
-   </prop> 
-				<prop key="hibernate.dialect">
-					org.hibernate.dialect.MySQL57Dialect
-				</prop>
-				<prop key="hibernate.max_fetch_depth">3</prop>
-				<prop key="hibernate.jdЬc.fetch_size">50</prop>
-				<prop key="hibernate.jdЬc.batch_size">10</prop>
-						<prop key="hibernate.show_sql">true</prop>
-		<prop key="hibernate.format_sql">true</prop>
-<!-- 		<prop key="hibernate.hbm2ddl.auto">create-drop</prop> -->
-		<prop key="hibernate.id.new_generator_mappings">false</prop>	
-			</props>
-		</property>
-	</bean>
-	
-	<bean id="emfA" parent="emfBase">
-		<property name="dataSource" ref="dataSourceA" />
-		<property name="persistenceUnitName" value="emfA" />
-	</bean>
-	<bean id="emfBB" parent="emfBase">
-		<property name="dataSource" ref="dataSourceB" />
-		<property name="persistenceUnitName" value="emfB" />
-	</bean>
-<bean id="atomikosTransactionМanager" class="com.atomikos.icatch.jta.UserTransactionManager"
-	init-method="init" destroy-method="close">
-	<property name="forceShutdown" value="true" />
-</bean>
-	<bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp">
-		<property name="transactionTimeout" value="300" />
-	</bean>
-	<bean id="transactionМanagerAtomicos"
-		class="org.springframework.transaction.jta.JtaTransactionManager" depends-on="atomikosTransactionМanager, atomikosUserTransaction">
-		<property name="transactionManager" ref="atomikosTransactionМanager" />
-		<property name="userTransaction" ref="atomikosUserTransaction" />
-	</bean>
+        <!-- 		<property name="packagesToScan" value="my.myname" /> -->
+        <!--     <property name="jtaTransactionManager" ref="transactionМanagerAtomicos"></property> -->
+        <!--     <property name="hibernateProperties"> -->
+        <!--             <props> -->
+        <!--                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop> -->
+        <!--                 <prop key="hibernate.show_sql">true</prop> -->
+        <!--                 <prop key="hibernate.format_sql">true</prop> -->
+        <!--                 <prop key="hibernate.use_sql_comments">false</prop> -->
+        <!--                 <prop key="hibernate.current_session_context_class">jta</prop>  -->
+        <!--                 <prop key="hibernate.max_fetch_depth">3</prop> -->
+        <!-- 				<prop key="hibernate.jdЬc.fetch_size">50</prop> -->
+        <!-- 				<prop key="hibernate.jdЬc.batch_size">10</prop> -->
+        <!-- 		<prop key="hibernate.hbm2ddl.auto">create-drop</prop> -->
+        <!-- 		<prop key="hibernate.id.new_generator_mappings">false</prop>         -->
+        <!--             </props> -->
+        <!--         </property> -->
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
+        <property name="packagesToScan" value="my.myname"/>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.current_session_context_class">jta</prop>
+                <prop key="hibernate.transaction.factory_class">
+                    org.hibernate.transaction.JTATransactionFactory
+                </prop>
+                <prop key="hibernate.transaction.manager_lookup_class">
+                    org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform
+                </prop>
+                <prop key="hibernate.dialect">
+                    org.hibernate.dialect.MySQL8Dialect
+                </prop>
+                <prop key="hibernate.max_fetch_depth">3</prop>
+                <prop key="hibernate.jdЬc.fetch_size">50</prop>
+                <prop key="hibernate.jdЬc.batch_size">10</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+                <prop key="hibernate.id.new_generator_mappings">false</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="emfA" parent="emfBase">
+        <property name="dataSource" ref="dataSourceA"/>
+        <property name="persistenceUnitName" value="emfA"/>
+    </bean>
+    <bean id="emfB" parent="emfBase">
+        <property name="dataSource" ref="dataSourceB"/>
+        <property name="persistenceUnitName" value="emfB"/>
+    </bean>
+    <bean id="emfPostgres"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+          abstract="true">
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
+        <property name="packagesToScan" value="my.myname"/>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.current_session_context_class">jta</prop>
+                <prop key="hibernate.transaction.factory_class">
+                    org.hibernate.transaction.JTATransactionFactory
+                </prop>
+                <prop key="hibernate.transaction.manager_lookup_class">
+                    org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform
+                </prop>
+                <prop key="hibernate.dialect">
+                    org.hibernate.dialect.PostgreSQL10Dialect
+                </prop>
+                <prop key="hibernate.max_fetch_depth">3</prop>
+                <prop key="hibernate.jdЬc.fetch_size">50</prop>
+                <prop key="hibernate.jdЬc.batch_size">10</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+                <prop key="hibernate.id.new_generator_mappings">false</prop>
+            </props>
+        </property>
+    </bean>
+    <bean id="emfC" parent="emfPostgres">
+        <property name="dataSource" ref="dataSourcePostgres"/>
+        <property name="persistenceUnitName" value="emfC"/>
+    </bean>
+    <bean id="atomikosTransactionМanager" class="com.atomikos.icatch.jta.UserTransactionManager"
+          init-method="init" destroy-method="close">
+        <property name="forceShutdown" value="true"/>
+    </bean>
+    <bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp">
+        <property name="transactionTimeout" value="300"/>
+    </bean>
+    <bean id="transactionМanagerAtomicos"
+          class="org.springframework.transaction.jta.JtaTransactionManager"
+          depends-on="atomikosTransactionМanager, atomikosUserTransaction">
+        <property name="transactionManager" ref="atomikosTransactionМanager"/>
+        <property name="userTransaction" ref="atomikosUserTransaction"/>
+    </bean>
 
 </beans> 

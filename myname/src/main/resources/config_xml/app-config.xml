@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
-	xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:beans="http://www.springframework.org/schema/beans"
-	xmlns:batch="http://www.springframework.org/schema/batch"
-	xmlns:websocket="http://www.springframework.org/schema/websocket"
-	xmlns:si="http://www.springframework.org/schema/integration"
-	xsi:schemaLocation="
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
+             xmlns:aop="http://www.springframework.org/schema/aop"
+             xmlns:util="http://www.springframework.org/schema/util"
+             xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:batch="http://www.springframework.org/schema/batch"
+             xmlns:websocket="http://www.springframework.org/schema/websocket"
+             xmlns:si="http://www.springframework.org/schema/integration"
+             xsi:schemaLocation="
      http://www.springframework.org/schema/aop
      http://www.springframework.org/schema/aop/spring-aop.xsd
      http://www.springframework.org/schema/jdbc
@@ -29,165 +32,163 @@
          http://www.springframework.org/schema/websocket
 		 http://www.springframework.org/schema/websocket/spring-websocket.xsd ">
 
-	<import resource="app-config_JMS.xml" />
-	<import resource="app-config_JTA.xml" />
-	<import resource="app-config_Sheduler.xml" />
-	<import resource="app-config_httpInvoker.xml" />
-	<context:annotation-config />
-	<tx:annotation-driven />
-	<aop:aspectj-autoproxy proxy-target-class="true" />
-	<context:component-scan base-package="my.myname" />
-	<context:property-placeholder
-		location="properties/app.properties" />
-	<!-- WEB-INF/classes/ -->
+    <import resource="app-config_JMS.xml"/>
+    <import resource="app-config_JTA.xml"/>
+    <import resource="app-config_Sheduler.xml"/>
+    <import resource="app-config_httpInvoker.xml"/>
+    <context:annotation-config/>
+    <tx:annotation-driven/>
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+    <context:component-scan base-package="my.myname"/>
+    <context:property-placeholder
+            location="properties/app.properties"/>
+    <!-- WEB-INF/classes/ -->
 
 
-	<jpa:repositories base-package="my.myname"
-		entity-manager-factory-ref="entityManagerFactory"
-		transaction-manager-ref="transactionManagerJPA" />
+    <jpa:repositories base-package="my.myname"
+
+                      transaction-manager-ref="transactionManagerJPA"/>
 
 
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
-		p:driverClassName="com.mysql.jdbc.Driver" p:url="jdbc:mysql://localhost:3306/my_hibernate"
-		p:username="root" p:password="admin">
-	</bean>
-	<util:properties id="dataSourceProperties">
-		<prop key="defaultAutoCommit">false</prop>
+    <bean id="dataSource"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+          p:driverClassName="com.mysql.jdbc.Driver" p:url="jdbc:mysql://localhost:3306/my_hibernate"
+          p:username="root" p:password="admin">
+    </bean>
+    <util:properties id="dataSourceProperties">
+        <prop key="defaultAutoCommit">false</prop>
 
-	</util:properties>
-	<bean id="transactionManagerSession" depends-on="sessionFactory"
-		class="org.springframework.orm.hibernate5.HibernateTransactionManager"
-		p:sessionFactory-ref="sessionFactory">
-		<qualifier value="transactionManager" />
-	</bean>
-	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
-		p:dataSource-ref="dataSource" p:packagesToScan="my.myname"
-		p:hibernateProperties-ref="hibernateProperties" />
+    </util:properties>
+    <bean id="transactionManagerSession" depends-on="sessionFactory"
+          class="org.springframework.orm.hibernate5.HibernateTransactionManager"
+          p:sessionFactory-ref="sessionFactory">
+        <qualifier value="transactionManager"/>
+    </bean>
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
+          p:dataSource-ref="dataSource" p:packagesToScan="my.myname"
+          p:hibernateProperties-ref="hibernateProperties"/>
 
-	<bean id="transactionManagerJPA" class="org.springframework.orm.jpa.JpaTransactionManager"
-		p:entityManagerFactory-ref="entityManagerFactory">
-		<qualifier value="transactionManagerJPA" />
-	</bean>
-
-
-	<bean id="hibernateJpaVendorAdapter"
-		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
-
-	<bean id="entityManagerFactory"
-		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
-		p:dataSource-ref="dataSource" p:jpaVendorAdapter-ref="hibernateJpaVendorAdapter"
-		p:packagesToScan="my.myname" p:jpaProperties-ref="hibernateProperties" />
+    <bean id="transactionManagerJPA" class="org.springframework.orm.jpa.JpaTransactionManager"
+          p:entityManagerFactory-ref="entityManagerFactory">
+        <qualifier value="transactionManagerJPA"/>
+    </bean>
 
 
+    <bean id="hibernateJpaVendorAdapter"
+          class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
 
-	<util:properties id="hibernateProperties">
-		<prop key="hibernate.dialect">org.hibernate.dialect.MySQL57Dialect</prop>
-		<prop key="hibernate.max_fetch_depth">3</prop>
-		<prop key="hibernate.jdЬc.fetch_size">50</prop>
-		<prop key="hibernate.jdЬc.batch_size">10</prop>
-		<prop key="hibernate.show_sql">true</prop>
-		<prop key="hibernate.format_sql">true</prop>
-		<prop key="hibernate.hbm2ddl.auto">create-drop</prop>
-		<prop key="hibernate.id.new_generator_mappings">false</prop>
-		<prop key="hibernate.generate_statistics">true</prop>
-		<prop key="hibernate.session_factory_name">sessionFactory</prop>
-	</util:properties>
+    <bean id="entityManagerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+          p:dataSource-ref="dataSource" p:jpaVendorAdapter-ref="hibernateJpaVendorAdapter"
+          p:packagesToScan="my.myname" p:jpaProperties-ref="hibernateProperties"/>
 
 
-
-	<!-- Converters ("conversionService" name - don't change, AppContx override 
-		default converter factory bean) -->
-	<!-- <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean"> 
-		TEST -->
-
-	<bean id="conversionService"
-		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
-		<property name="converters">
-			<list>
-				<bean class="my.myname.validation.converters.StringToDateConverter"></bean>
-				<bean
-					class="my.myname.validation.converters.AnotherTypeTOSimpleBeanConverter"></bean>
-			</list>
-		</property>
-		<property name="formatters">
-			<list>
-				<bean class="my.myname.validation.formaters.Formater"></bean>
-				<bean class="my.myname.validation.formaters.TestAnotationFormatter"></bean>
-			</list>
-		</property>
-	</bean>
-
-	<!-- not jsr_349 -->
-	<bean id="validatorJSR_303"
-		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"></bean>
+    <util:properties id="hibernateProperties">
+        <prop key="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</prop>
+        <prop key="hibernate.max_fetch_depth">3</prop>
+        <prop key="hibernate.jdЬc.fetch_size">50</prop>
+        <prop key="hibernate.jdЬc.batch_size">10</prop>
+        <prop key="hibernate.show_sql">true</prop>
+        <prop key="hibernate.format_sql">true</prop>
+        <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+        <prop key="hibernate.id.new_generator_mappings">false</prop>
+        <prop key="hibernate.generate_statistics">true</prop>
+        <prop key="hibernate.session_factory_name">sessionFactory</prop>
+    </util:properties>
 
 
-	<!-- TEST BEAN -->
-	<bean id="dateConvert" class="my.myname.SimpleBeanImpl" p:dt="14-05-2036"
-		p:name="HELLO, bitch!!!" />
+    <!-- Converters ("conversionService" name - don't change, AppContx override
+        default converter factory bean) -->
+    <!-- <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        TEST -->
+
+    <bean id="conversionService"
+          class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="converters">
+            <list>
+                <bean class="my.myname.validation.converters.StringToDateConverter"></bean>
+                <bean
+                        class="my.myname.validation.converters.AnotherTypeTOSimpleBeanConverter"></bean>
+            </list>
+        </property>
+        <property name="formatters">
+            <list>
+                <bean class="my.myname.validation.formaters.Formater"></bean>
+                <bean class="my.myname.validation.formaters.TestAnotationFormatter"></bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- not jsr_349 -->
+    <bean id="validatorJSR_303"
+          class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"></bean>
 
 
-	<!-- BATCHER -->
-	<batch:job id="jobUser">
-		<batch:step id="stepUserOne">
-			<batch:tasklet transaction-manager="transactionManagerSession">
-				<batch:chunk reader="itemReader" writer="itemWriter"
-					processor="userItemProcessor" commit-interval="100">
-					<batch:listeners>
-						<batch:listener ref="stepExecutionListener"></batch:listener>
-					</batch:listeners>
-				</batch:chunk>
-			</batch:tasklet>
-			<batch:fail on="FAILED" />
-			<batch:end on="*" />
-		</batch:step>
-	</batch:job>
-
-	<bean id="itemReader"
-		class="org.springframework.batch.item.database.HibernateCursorItemReader">
-		<property name="sessionFactory" ref="sessionFactory" />
-		<property name="useStatelessSession" value="false" />
-		<property name="queryString" value="from User u" />
-	</bean>
-	<bean id="itemWriter" class="my.myname.batch.WriterUserItemImpl" />
-
-	<bean id="jobRepository"
-		class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
-		<beans:property name="transactionManager" ref="transactionManagerSession" />
-	</bean>
-	<bean id="jobLuncher"
-		class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
-		p:jobRepository-ref="jobRepository" />
+    <!-- TEST BEAN -->
+    <bean id="dateConvert" class="my.myname.SimpleBeanImpl" p:dt="14-05-2036"
+          p:name="HELLO, bitch!!!"/>
 
 
-	<!-- Spring integration -->
-	<si:channel id="chanelInput">
-	</si:channel>
-	<si:channel id="chanelOutput">
-		<si:queue capacity="10" />
-	</si:channel>
-	<si:service-activator input-channel="chanelInput"
-		output-channel="chanelOutput" ref="serviceIntegration" method="getHelloUpper" />
+    <!-- BATCHER -->
+    <batch:job id="jobUser">
+        <batch:step id="stepUserOne">
+            <batch:tasklet transaction-manager="transactionManagerSession">
+                <batch:chunk reader="itemReader" writer="itemWriter"
+                             processor="userItemProcessor" commit-interval="100">
+                    <batch:listeners>
+                        <batch:listener ref="stepExecutionListener"></batch:listener>
+                    </batch:listeners>
+                </batch:chunk>
+            </batch:tasklet>
+            <batch:fail on="FAILED"/>
+            <batch:end on="*"/>
+        </batch:step>
+    </batch:job>
+
+    <bean id="itemReader"
+          class="org.springframework.batch.item.database.HibernateCursorItemReader">
+        <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="useStatelessSession" value="false"/>
+        <property name="queryString" value="from User u"/>
+    </bean>
+    <bean id="itemWriter" class="my.myname.batch.WriterUserItemImpl"/>
+
+    <bean id="jobRepository"
+          class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+        <beans:property name="transactionManager" ref="transactionManagerSession"/>
+    </bean>
+    <bean id="jobLuncher"
+          class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
+          p:jobRepository-ref="jobRepository"/>
 
 
-<!-- <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean"> -->
-<!--     <property name="locateExistingServerIfPossible" value="true" /> -->
-<!-- </bean> -->
-	<beans:bean id="jmxExporter"
-		class="org.springframework.jmx.export.MBeanExporter">
-		<property name="beans">
-			<map>
-				<beans:entry key="bean:name=JmxUserRepository"
-					value-ref="userRepository">
-				</beans:entry>
-				<beans:entry key="bean:name=JmxUser" value-ref="user">
-				</beans:entry>
-				<beans:entry key="Hibernate:application=Statistics" value-ref="hibernateJmx">
-				</beans:entry>
-			</map>
-		</property>
-	</beans:bean>
+    <!-- Spring integration -->
+    <si:channel id="chanelInput">
+    </si:channel>
+    <si:channel id="chanelOutput">
+        <si:queue capacity="10"/>
+    </si:channel>
+    <si:service-activator input-channel="chanelInput"
+                          output-channel="chanelOutput" ref="serviceIntegration" method="getHelloUpper"/>
+
+
+    <!-- <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean"> -->
+    <!--     <property name="locateExistingServerIfPossible" value="true" /> -->
+    <!-- </bean> -->
+    <beans:bean id="jmxExporter"
+                class="org.springframework.jmx.export.MBeanExporter">
+        <property name="beans">
+            <map>
+                <beans:entry key="bean:name=JmxUserRepository"
+                             value-ref="userRepository">
+                </beans:entry>
+                <beans:entry key="bean:name=JmxUser" value-ref="user">
+                </beans:entry>
+                <beans:entry key="Hibernate:application=Statistics" value-ref="hibernateJmx">
+                </beans:entry>
+            </map>
+        </property>
+    </beans:bean>
 
 </beans:beans> 

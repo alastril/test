@@ -13,7 +13,7 @@ public interface ZooDao {
 	public void deleteZoo(Zoo zoo);
 	public Animals save(Animals animal) ;
 	public Food save(Food food) ;
-	public List<Animals> saveJTA(Animals animal, Animals dublicate) ;
+	public List<Animals> saveJTA(Animals animal, Animals animalFor2ndDB, Animals postgres) ;
 	public Zoo getZooById(Long id);
 	public List<Animals> getListAnimals();
 }

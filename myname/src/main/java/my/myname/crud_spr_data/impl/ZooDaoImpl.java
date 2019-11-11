@@ -35,6 +35,9 @@ public class ZooDaoImpl implements ZooDao {
 	@PersistenceContext(unitName="emfB")
 	EntityManager emB;
 	@Autowired
+	@Qualifier("emfC")
+	EntityManager emC;
+	@Autowired
 	JmsProduser call;
 	@Autowired
 	@Qualifier("entityManagerFactory")
@@ -61,29 +64,33 @@ public class ZooDaoImpl implements ZooDao {
 	}
 	
 	@Transactional(transactionManager = "transactionМanagerAtomicos", rollbackFor = Exception.class)
-	public List<Animals> saveJTA(Animals animals, Animals duplicate) {
+	public List<Animals> saveJTA(Animals animals, Animals animalFor2ndDB, Animals postgres) {
 		List<Animals> anls = new ArrayList<>();
 		if (!emA.isJoinedToTransaction() && !emB.isJoinedToTransaction()) {
 			emA.joinTransaction();
 			emB.joinTransaction();
-			
+			emC.joinTransaction();
 		}
+
 		if(animals.getId()==null && animals.getId()==null){
 			System.out.println("persist");
 			emA.persist(animals);
-			emB.persist(duplicate);
+			emB.persist(animalFor2ndDB);
+			emC.persist(postgres);
 			call.sendToQueue("JMS: JTA persist!!!!");
 			call.sendToTopic("JMS: JTA persist!!!!");
 		} else {
 			System.out.println("merge");
 			emA.merge(animals);
-			emB.merge(duplicate);
+			emB.merge(animalFor2ndDB);
+			emC.merge(postgres);
 			call.sendToQueue("JMS: JTA merge!!!!");
 			call.sendToTopic("JMS: JTA merge!!!!");
 		}
+
 //		int i = 1/0; //check for rollback
 		anls.add(animals);
-		anls.add(duplicate);
+		anls.add(animalFor2ndDB);
 		return anls;
 	}
 
