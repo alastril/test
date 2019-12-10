@@ -72,7 +72,7 @@ public class ZooDaoImpl implements ZooDao {
 			emC.joinTransaction();
 		}
 
-		if(animals.getId()==null && animals.getId()==null){
+		if(animals.getId()==null && animalFor2ndDB.getId()==null && postgres.getId()==null){
 			System.out.println("persist");
 			emA.persist(animals);
 			emB.persist(animalFor2ndDB);
